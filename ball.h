@@ -11,7 +11,13 @@ class ball{
     Pixel x;
     Pixel y;
 
-    // if its solid or stripe
+    // if the ball is collided
+    bool collided = false;
+
+    // direction the ball collided with the wall
+    DIRECTION ColWall;
+
+    // if its solid or stripe or black
     ballType BallType;
 
     // vector that stores the x and y of each pixel of the circumference
@@ -29,7 +35,20 @@ public:
     ball(Pixel x, Pixel y, power velocity, Degree angle, ballType Balltype);
 
     // moving function
-    void move();
+    void move(std::vector<ball> balls);
+
+    // sees if the ball has collided with another ball
+    bool checkForCollisionBall(ball ball);
+
+    // sees if the ball has collided with a wall
+    bool checkForCollisionWall();
+
+    // if the ball has collided with another ball
+    void collisionBall(ball ball1);
+
+    // if a ball has collided with the wall
+    void collisionWall();
+
 };
 
 
