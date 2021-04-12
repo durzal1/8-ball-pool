@@ -4,9 +4,17 @@
 
 #ifndef POOL_TYPES__H
 #define POOL_TYPES__H
+// RADIUS CONSTANT IS ONE
 
 // defines all the typedefs
-typedef float pixel;
+typedef float Pixel;
+typedef int Degree;
+
+// if its solid or stripe
+enum ballType{
+    SOLID = 0,
+    STRIPE = 1,
+};
 
 // the initial power of the ball
 // it will correspond to the starting pixel value
