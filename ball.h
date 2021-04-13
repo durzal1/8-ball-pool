@@ -6,6 +6,9 @@
 #include "vector"
 #include "types_.h"
 #include <iostream>
+
+
+
 class ball{
     // x and y cords
     Pixel x;
@@ -41,13 +44,16 @@ public:
     bool checkForCollisionBall(ball ball);
 
     // sees if the ball has collided with a wall
-    bool checkForCollisionWall();
+    bool checkForCollisionWall(ball ball);
 
     // if the ball has collided with another ball
     void collisionBall(ball ball1);
 
     // if a ball has collided with the wall
-    void collisionWall();
+    void collisionWall(ball ball);
+
+    // calculates vector of the ball's circumference using radius
+    void calculateCircumference();
 
 };
 
