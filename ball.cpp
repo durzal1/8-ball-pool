@@ -3,7 +3,22 @@
 //
 
 #include "ball.h"
+#define _USE_MATH_DEFINES
 #include <cmath>
+#include <math.h>
+
+
+// RADIUS CONSTANT
+int Radius = 1;
+
+// threshold distance between two balls to be considered a collision
+int ThresDist = 2;
+
+// x and y max constant in pixels
+int XMAX = 1000;
+int YMAX = 1000;
+
+
 // constructor
 ball::ball(Pixel x, Pixel y, power velocity, Degree angle, ballType Balltype) {
     this->x = x;
@@ -15,10 +30,11 @@ ball::ball(Pixel x, Pixel y, power velocity, Degree angle, ballType Balltype) {
 //moving function
 void ball::move(std::vector<ball> balls) {
     for (int i = 0; i < velocity; i ++){
+ 
         // calculates the new x and y
         x += Radius * cos(angle * M_PI / 180);
         y += Radius * sin(angle * M_PI / 180);
-
+        
         // removes one from the velocity
         velocity -= 1;
 
@@ -29,11 +45,12 @@ void ball::move(std::vector<ball> balls) {
             if (checkForCollisionBall(Ball)) {
                 collisionBall(Ball);
             }
+            // collides with wall
+            if (checkForCollisionWall(Ball)) {
+                collisionWall(Ball);
+            }
         }
-        // collides with wall
-        if (checkForCollisionWall()){
-            collisionWall();
-        }
+        
     }
 
 }
@@ -52,36 +69,36 @@ bool ball::checkForCollisionBall(ball ball_) {
     return false;
 }
 // function that will check if a collision has occurred with the wall
-bool ball::checkForCollisionWall() {
+bool ball::checkForCollisionWall(ball ball_) {
     // left wall
     if (x < 0){
-        this->ColWall = LEFT;
+        ball_.ColWall = LEFT;
         return true;
     }
     // up wall
     else if (y > YMAX){
-        this->ColWall = UP;
+        ball_.ColWall = UP;
         return true;
     }
     // right wall
     else if(x > XMAX){
-        this->ColWall = RIGHT;
+        ball_.ColWall = RIGHT;
         return true;
     }
     //down wall
     else if (y < 0){
-        this->ColWall = DOWN;
+        ball_.ColWall = DOWN;
         return true;
     }
     return false;
 }
 // function that will happen if a collision occurred with a wall
-void ball::collisionWall(){
+void ball::collisionWall(ball ball_){
     // these numbers should be experimented with
     this->velocity /= 3;
 
     // depending on what direction it is facing
-    switch (this->ColWall){
+    switch (ball_.ColWall){
         case LEFT: ; break;
         case UP: ; break;
         case RIGHT: ; break;
