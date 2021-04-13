@@ -9,6 +9,7 @@
 
 
 
+
 class ball{
     // x and y cords
     Pixel x;
@@ -55,6 +56,9 @@ public:
     // calculates vector of the ball's circumference using radius
     void calculateCircumference();
 
+    // returns vector of circumference
+    
+    std::vector<std::vector<Pixel>> getCir();
 };
 
 
