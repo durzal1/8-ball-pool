@@ -1,16 +1,14 @@
 #include <iostream>
-#include "ball.h"
-#include "render.h"
+#include "ball.cpp"
+#include "render.cpp"
 #include <SDL2/SDL.h>
 
 
 int main(int argc, char* argv[]) {
-    ball Ballmain = ball(500, 500 , ONE, 30, WHITE);
+    ball Ballmain = ball(500, 500 , FIVE, 0, WHITE);
     render Rendermain = render();
-    ball Ball2 = ball(200, 200, NONE, 0, SOLID);
+    ball Ball2 = ball(700, 500, NONE, 0, SOLID);
     std::vector<ball> balls = {Ball2};
-    
-    Ballmain.move(balls);
 
     Ball2.calculateCircumference();
 
@@ -29,7 +27,7 @@ int main(int argc, char* argv[]) {
     
     // SDL main event loop
 
-    while (1) {
+    while (true) {
         SDL_Event e;
         if (SDL_PollEvent(&e)) {
             if (e.type == SDL_QUIT) {
@@ -43,10 +41,17 @@ int main(int argc, char* argv[]) {
         // sets bg to pink
         SDL_SetRenderDrawColor(renderer, 255, 23, 255, 0);
 
+        Ballmain.move(balls);
+
+        Ballmain.calculateCircumference();
+
+
         // draws circle
         SDL_RenderClear(renderer);
         Rendermain.drawCircle(renderer, Ball2);
+        Rendermain.drawCircle(renderer, Ballmain);
         SDL_RenderPresent(renderer);
+
     }
 
     
