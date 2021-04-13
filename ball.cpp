@@ -118,3 +118,14 @@ void ball::collisionBall(ball ball1) {
 
     // todo change direction
 }
+
+// function returns vector of the ball's circumference relative to x, y using radius
+void ball::calculateCircumference() {
+    // cycles through 360 degrees
+    for (int angle = 1; angle < 361; angle++) {
+        float x = (float)(Radius * cos(angle * M_PI / 180)) + this->x;
+        float y = (float)(Radius * sin(angle * M_PI / 180)) + this->y;
+        // adds to vector of vector
+        circumference.push_back({ x, y });
+    }
+};
