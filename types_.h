@@ -4,6 +4,8 @@
 
 #ifndef POOL_TYPES__H
 #define POOL_TYPES__H
+
+/*
 // RADIUS CONSTANT
 int Radius = 1;
 
@@ -13,6 +15,7 @@ int ThresDist = 2;
 // x and y max constant in pixels
 int XMAX = 1000;
 int YMAX = 1000;
+*/
 
 // defines all the typedefs
 typedef float Pixel;
