@@ -7,9 +7,8 @@
 #include <cmath>
 #include <math.h>
 
-
 // RADIUS CONSTANT
-int Radius = 1;
+int Radius = 30;
 
 // threshold distance between two balls to be considered a collision
 int ThresDist = 2;
@@ -128,4 +127,9 @@ void ball::calculateCircumference() {
         // adds to vector of vector
         circumference.push_back({ x, y });
     }
+};
+
+// returns ball circumference coordinates
+std::vector<std::vector<Pixel>> ball::getCir() {
+    return this->circumference;
 };
