@@ -1,5 +1,5 @@
 #include <iostream>
-#include "ball.cpp"
+#include "ball.h"
 #include <SDL2/SDL.h>
 
 
