@@ -7,11 +7,13 @@
 #include <cmath>
 #include <math.h>
 
+#include <SDL2/SDL.h>
+
 // RADIUS CONSTANT
 int Radius = 30;
 
-// threshold distance between two balls to be considered a collision
-int ThresDist = 2;
+// Radius for movement (should always be one)
+int MoveRad = 1;
 
 // x and y max constant in pixels
 int XMAX = 1000;
@@ -27,16 +29,14 @@ ball::ball(Pixel x, Pixel y, power velocity, Degree angle, ballType Balltype) {
     this->BallType = Balltype;
 }
 //moving function
-void ball::move(std::vector<ball> balls) {
-    for (int i = 0; i < velocity; i++){ 
+void ball::move(std::vector<ball> balls) {;
+    // removes one from the velocity
+    velocity -= 1;
+    for (int i = 0; i < velocity; i ++){
 
-        
         // calculates the new x and y
-        x += Radius * cos(angle * M_PI / 180);
-        y += Radius * sin(angle * M_PI / 180);
-        
-        // removes one from the velocity
-        velocity -= 1;
+        x += MoveRad * cos(angle * M_PI / 180);
+        y += MoveRad * sin(angle * M_PI / 180);
 
         /// if it collides
         // collides with ball
@@ -50,15 +50,19 @@ void ball::move(std::vector<ball> balls) {
                 collisionWall(Ball);
             }
         }
-        
-    }
 
+        // stops for a little bit
+        SDL_Delay(0);
+    }
 }
 //function that will check if a collision has occurred with another ball
 bool ball::checkForCollisionBall(ball ball_) {
 
     // distance between each balls
-    Dist dist = abs(ball_.x - this->x);
+    Dist dist = pow((ball_.x - this->x), 2) + pow((this->y- ball_.y), 2);
+
+    // threshold
+    float ThresDist = pow((Radius * 2),2);
     // if the ball is less than or equal to the threshold they are colliding
     if (dist <= ThresDist){
         ball_.collided = true;
@@ -75,17 +79,17 @@ bool ball::checkForCollisionWall(ball ball_) {
         ball_.ColWall = LEFT;
         return true;
     }
-    // up wall
+        // up wall
     else if (y > YMAX){
         ball_.ColWall = UP;
         return true;
     }
-    // right wall
+        // right wall
     else if(x > XMAX){
         ball_.ColWall = RIGHT;
         return true;
     }
-    //down wall
+        //down wall
     else if (y < 0){
         ball_.ColWall = DOWN;
         return true;
@@ -94,8 +98,7 @@ bool ball::checkForCollisionWall(ball ball_) {
 }
 // function that will happen if a collision occurred with a wall
 void ball::collisionWall(ball ball_){
-    // these numbers should be experimented with
-    this->velocity /= 3;
+
 
     // depending on what direction it is facing
     switch (ball_.ColWall){
@@ -110,21 +113,59 @@ void ball::collisionWall(ball ball_){
 
 // function that will happen if a collision occurred with a ball
 void ball::collisionBall(ball ball1) {
-    // these numbers should be experimented with
+    // get the angle between the two balls
+    float delta_x = ball1.x - this->x ;
+    float delta_y = ball1.y - this->y ;
 
-    // changes the velocity of each ball
-    ball1.velocity = this->velocity;
-    this->velocity /= 3;
+    float theta_radians = atan2(delta_y, delta_x);
 
-    // todo change direction
+    //gets degrees
+    int Deg1 = theta_radians * 180/M_PI;
+
+    // from the ball thats being collided into's perspective
+
+    float delta2_x = this->x - ball1.x;
+    float delta2_y = this->y - ball1.y;
+
+    float theta2_radians = atan2(delta2_y, delta2_x);
+
+    int Deg2 = theta2_radians * 180/M_PI;
+
+    // mass of both object ( both 1 because they're the same)
+    int m1 = 1;
+    int m2 = 1;
+
+    //    int b_vel = this->velocity * ((sqrt(m1 + m2 + (2 * m1 * m2 * cos(theta_radians))) ) / (m1+ m2) );
+    //    int b1_vel = this->velocity * ((2 * m1) / (m1 + m2)) * sin(theta_radians/2);
+
+    // gets the new velocity of each ball
+    int v1 = (this->velocity * (m1 - m2) + (2 * m2 * 0)) / (m1 + m2);
+    int v2 = (0 * (m2-m1) + (2 * m1 * this->velocity)) / (m1 + m2) ;
+
+    //todo set the ball to a wierd angle for it to collide then test
+
+    // gets the new direction of each ball
+    float d1 = ((m2 * sin(theta_radians)) / (m1 + (m2 * cos(theta_radians))));
+    float d2 = (M_PI - theta2_radians) / 2;
+
+    // convert to degrees
+    int d1_deg = d1 * 180/M_PI;
+    int d2_deg = d2 * 180/M_PI;
+
+    ball1.velocity = this->velocity - (this->velocity / 4);
+    this->velocity = this->velocity / 4;
+
+
+
 }
 
 // function returns vector of the ball's circumference relative to x, y using radius
-// precision = number of pixels drawn... more -> better quality
-void ball::calculateCircumference(int precision) {
-    // TODO: CALCULATE PRECISION OF PIXEL DRAWING BASED ON RADIUS
+void ball::calculateCircumference() {
+    // clears circumference
+    circumference.clear();
+
     // cycles through 360 degrees
-    for (int angle = 1; angle < precision; angle++) {
+    for (int angle = 1; angle < 361; angle++) {
         float x = (float)(Radius * cos(angle * M_PI / 180)) + this->x;
         float y = (float)(Radius * sin(angle * M_PI / 180)) + this->y;
         // adds to vector of vector

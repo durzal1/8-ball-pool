@@ -9,7 +9,7 @@
 
 #include <iostream>
 
-#include <SDL2/SDL.h> // works for kevin too now :D
+#include <SDL2/SDL.h> // works for kevin too now :D POG
 #include "ball.h"
 
 
