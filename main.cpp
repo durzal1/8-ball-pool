@@ -12,7 +12,7 @@
 
 
 int main(int argc, char* argv[]) {
-    ball Ballmain = ball(500, 500, FIVE, 40, SOLID, 0);
+    ball Ballmain = ball(500, 500, FIVE, 300, SOLID, 0);
     render Rendermain = render();
     ball Ball2 = ball(700, 650, NONE, 0, SOLID, 1);
 

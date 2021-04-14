@@ -80,12 +80,12 @@ bool ball::checkForCollisionBall(ball& ball_) {
 // function that will check if a collision has occurred with the wall
 bool ball::checkForCollisionWall() {
     // left wall
-    if (x - Radius< 0){
+    if (x - Radius <= 0){
         ColWall = LEFT;
         return true;
     }
         // up wall
-    else if (y + Radius> YMAX){
+    else if (y + Radius>= YMAX){
         ColWall = UP;
         return true;
     }
@@ -96,7 +96,7 @@ bool ball::checkForCollisionWall() {
         return true;
     }
         //down wall
-    else if (y - Radius < 0){
+    else if (y - Radius <= 0){
         ColWall = DOWN;
         return true;
     }
@@ -104,21 +104,42 @@ bool ball::checkForCollisionWall() {
 }
 // function that will happen if a collision occurred with a wall
 void ball::collisionWall(){
+    float theta_radians;
+    float theta2_radians;
+    if (ColWall == UP || ColWall == RIGHT) {
 
-    // get the angle between the ball and point of collision
-    float delta_x = (this->x + Radius ) -this->x;
-    float delta_y =(this->y + Radius ) - this->y;
+        // get the angle between the ball and point of collision
+        float delta_x = (this->x + Radius ) -this->x;
+        float delta_y =(this->y + Radius ) - this->y;
 
-    float theta_radians = atan2(delta_y, delta_x);
+        theta_radians = atan2(delta_y, delta_x);
 
-//    // from the ball thats being collided into's perspective
-//
-//    float delta2_x = this->x - ball1.x;
-//    float delta2_y = this->y - ball1.y;
-//
-//    float theta2_radians = atan2(delta2_y, delta2_x);
-//
-//    int Deg2 = theta2_radians * 180/M_PI;
+        // from the wall thats being collided into's perspective
+        float delta2_x = this->x - (this->x + Radius ) ;
+        float delta2_y = this->y - (this->y + Radius );
+
+        theta2_radians = atan2(delta2_y, delta2_x);
+
+        int Deg2 = theta2_radians * 180/M_PI;
+    }
+    else{
+        // get the angle between the ball and point of collision
+        float delta_x = (this->x - Radius ) -this->x;
+        float delta_y =(this->y - Radius ) - this->y;
+
+        theta_radians = atan2(delta_y, delta_x);
+
+        // from the wall thats being collided into's perspective
+        float delta2_x = this->x - (this->x - Radius ) ;
+        float delta2_y = this->y - (this->y - Radius );
+
+        theta2_radians = atan2(delta2_y, delta2_x);
+
+        int Deg2 = theta2_radians * 180/M_PI;
+    }
+
+
+
 
     // mass of both object ( both 1 because they're the same)
     int m1 = 1;
@@ -130,7 +151,7 @@ void ball::collisionWall(){
 
     // gets the new direction of each ball
     float d1 = ((m2 * sin(theta_radians)) / (m1 + (m2 * cos(theta_radians))));
-    float d2 = (M_PI - theta_radians) / 2;
+    float d2 = (M_PI - theta2_radians) / 2;
 
     // convert to degrees
     int d1_deg = tan(d1) * 180/M_PI;
@@ -139,7 +160,7 @@ void ball::collisionWall(){
     this->velocity = 1000;
 
     this->angle = d2_deg;
-    // todo change direction
+    collided = true;
 }
 
 // function that will happen if a collision occurred with a ball
