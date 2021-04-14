@@ -9,16 +9,16 @@
 
 #include <iostream>
 
-//#include <SDL.h> for kevin
-#include <SDL2/SDL.h> // for zacky
+#include <SDL2/SDL.h> // works for kevin too now :D
 #include "ball.h"
+
 
 // TODO make render class
 
 class render {
 public:
 	// draws circle
-	void drawCircle(SDL_Renderer* renderer, ball ball);
+	int drawCircle(SDL_Renderer* renderer, ball ball, int radius, bool fill);
 };
 
 
