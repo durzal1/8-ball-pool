@@ -1,12 +1,96 @@
 #include "render.h"
 
 // draws circle
-void render::drawCircle(SDL_Renderer* renderer, ball ball) {
-	// sets draw color to white
-	SDL_SetRenderDrawColor(renderer, 255, 255, 255, 0);
-	auto points = ball.getCir();
-	// plots points based on circumference vector
-	for (int i = 0; i < 360; i++) {
-		SDL_RenderDrawPoint(renderer, points[i][0], points[i][1]);
-	}
+int render::drawCircle(SDL_Renderer* renderer, ball ball, int radius, bool fill)
+{
+    int r = ball.getColor().r;
+    int g = ball.getColor().g;
+    int b = ball.getColor().b;
+    SDL_SetRenderDrawColor(renderer, r, g, b, 255);
+    int offsetx, offsety, d;
+    int status;
+
+
+    SDL_Point p = ball.getPixels();
+    int x = p.x;
+    int y = p.y;
+
+    offsetx = 0;
+    offsety = radius;
+    d = radius - 1;
+    status = 0;
+
+    while (offsety >= offsetx) {
+        status += SDL_RenderDrawPoint(renderer, x + offsetx, y + offsety);
+        status += SDL_RenderDrawPoint(renderer, x + offsety, y + offsetx);
+        status += SDL_RenderDrawPoint(renderer, x - offsetx, y + offsety);
+        status += SDL_RenderDrawPoint(renderer, x - offsety, y + offsetx);
+        status += SDL_RenderDrawPoint(renderer, x + offsetx, y - offsety);
+        status += SDL_RenderDrawPoint(renderer, x + offsety, y - offsetx);
+        status += SDL_RenderDrawPoint(renderer, x - offsetx, y - offsety);
+        status += SDL_RenderDrawPoint(renderer, x - offsety, y - offsetx);
+
+        if (status < 0) {
+
+            status = -1;
+            break;
+        }
+
+        if (d >= 2 * offsetx) {
+            d -= 2 * offsetx + 1;
+            offsetx += 1;
+        }
+        else if (d < 2 * (radius - offsety)) {
+            d += 2 * offsety - 1;
+            offsety -= 1;
+        }
+        else {
+            d += 2 * (offsety - offsetx - 1);
+            offsety -= 1;
+            offsetx += 1;
+        }
+    }
+
+    if (fill) {
+
+
+        offsetx = 0;
+        offsety = radius;
+        d = radius - 1;
+        status = 0;
+
+        while (offsety >= offsetx) {
+
+            status += SDL_RenderDrawLine(renderer, x - offsety, y + offsetx,
+                x + offsety, y + offsetx);
+            status += SDL_RenderDrawLine(renderer, x - offsetx, y + offsety,
+                x + offsetx, y + offsety);
+            status += SDL_RenderDrawLine(renderer, x - offsetx, y - offsety,
+                x + offsetx, y - offsety);
+            status += SDL_RenderDrawLine(renderer, x - offsety, y - offsetx,
+                x + offsety, y - offsetx);
+
+            if (status < 0) {
+                status = -1;
+                break;
+            }
+
+            if (d >= 2 * offsetx) {
+                d -= 2 * offsetx + 1;
+                offsetx += 1;
+            }
+            else if (d < 2 * (radius - offsety)) {
+                d += 2 * offsety - 1;
+                offsety -= 1;
+            }
+            else {
+                d += 2 * (offsety - offsetx - 1);
+                offsety -= 1;
+                offsetx += 1;
+            }
+        }
+    }
+
+    return status;
+
 }
