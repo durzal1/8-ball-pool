@@ -6,7 +6,7 @@
 #include "vector"
 #include "types_.h"
 #include <iostream>
-
+#include <SDL2/SDL.h>
 
 
 
@@ -34,7 +34,8 @@ class ball{
     // direction the ball is currently moving (WILL BE A DEGREE)
     Degree angle;
 
-public:
+public:    
+
     // constructor
     ball(Pixel x, Pixel y, power velocity, Degree angle, ballType Balltype);
 
@@ -54,11 +55,22 @@ public:
     void collisionWall(ball ball);
 
     // calculates vector of the ball's circumference using radius
-    void calculateCircumference();
+    void calculateCircumference(int precision);
 
     // returns vector of circumference
-    
     std::vector<std::vector<Pixel>> getCir();
+
+    // clears circumference (used to clear so it can draw new pixels after it has moved)
+    void clearCir();
+
+    // sets x, y (for testing)
+    void moveOffset (int x, int y);
+
+    // returns x, y
+    SDL_Point getPixels();
+
+    // returns color
+    SDL_Color getColor();
 };
 
 
