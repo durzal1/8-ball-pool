@@ -17,10 +17,10 @@
 
 class render {
 public:
-	// draws circle
-	int drawCircle(SDL_Renderer* renderer, ball ball, int radius, bool fill);
+    // draws circle
+    void drawCircle(SDL_Renderer* renderer, ball ball);
+    int drawCircle(SDL_Renderer* renderer, ball ball, int radius, bool fill);
 };
-
 
 
 

@@ -27,35 +27,37 @@ class ball{
     // vector that stores the x and y of each pixel of the circumference
     std::vector<std::vector<Pixel>> circumference;
 
-    // how many pixels it is currently going per rotation
-    // a rotation here is defined by when the ball is done moving the x amount and it about to decrease that x amount by one
-    int velocity;
+    // identification number for the side balls
+    int innovation;
 
     // direction the ball is currently moving (WILL BE A DEGREE)
     Degree angle;
 
-public:    
+public:
+    // how many pixels it is currently going per rotation
+    // a rotation here is defined by when the ball is done moving the x amount and it about to decrease that x amount by one
+    int velocity;
 
     // constructor
-    ball(Pixel x, Pixel y, power velocity, Degree angle, ballType Balltype);
+    ball(Pixel x, Pixel y, power velocity, Degree angle, ballType Balltype, int innovation);
 
     // moving function
-    void move(std::vector<ball> balls);
+    void move(std::vector<ball> &balls);
 
     // sees if the ball has collided with another ball
-    bool checkForCollisionBall(ball ball);
+    bool checkForCollisionBall(ball& ball);
 
     // sees if the ball has collided with a wall
-    bool checkForCollisionWall(ball ball);
+    bool checkForCollisionWall();
 
     // if the ball has collided with another ball
-    void collisionBall(ball ball1);
+    void collisionBall(ball& ball1);
 
     // if a ball has collided with the wall
-    void collisionWall(ball ball);
+    void collisionWall();
 
     // calculates vector of the ball's circumference using radius
-    void calculateCircumference(int precision);
+    void calculateCircumference();
 
     // returns vector of circumference
     std::vector<std::vector<Pixel>> getCir();

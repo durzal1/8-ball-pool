@@ -1,20 +1,20 @@
 #include <iostream>
 // for zacky
-// #include "ball.cpp"
-// #include "render.cpp"
+ #include "ball.cpp"
+ #include "render.cpp"
 
 // for kevin
-#include "ball.h"
-#include "render.h"
+//#include "ball.h"
+//#include "render.h"
 
 
 #include <SDL2/SDL.h>
 
 
 int main(int argc, char* argv[]) {
-    ball Ballmain = ball(500, 500, FIVE, 0, SOLID);
+    ball Ballmain = ball(500, 500, FIVE, 40, SOLID, 0);
     render Rendermain = render();
-    ball Ball2 = ball(700, 500, NONE, 0, SOLID);
+    ball Ball2 = ball(700, 650, NONE, 0, SOLID, 1);
 
     std::vector<ball> balls = { Ball2 };
        
@@ -50,21 +50,39 @@ int main(int argc, char* argv[]) {
                 break;
             }
         }
-        // sets bg to pink
-        SDL_SetRenderDrawColor(renderer, 255, 23, 255, 0);
 
 
-        Ballmain.moveOffset(1, 1);
-        
-        
+
+        // moves the balls
+
+        // removes one from the velocity
+        Ballmain.velocity -= 1;
+
+        for (int i = 0; i < Ballmain.velocity; i ++) {
+            // sets bg to pink
+            SDL_SetRenderDrawColor(renderer, 255, 23, 255, 0);
+
+            SDL_RenderClear(renderer);
+
+            // moves the main ball
+            Ballmain.move(balls);
+
+            // goes through each ball to see if one their velocities is over 0
+            for (ball& Ball:balls){
+                if (Ball.velocity > 0){
+                    // moves the ball
+                    Ball.move(balls);
+                }
+                Rendermain.drawCircle(renderer, Ball, 30, true);
+            }
+            // draws circles
+            Rendermain.drawCircle(renderer, Ballmain, 30, true);
+
+
+            SDL_RenderPresent(renderer);
+        }
        
-        SDL_RenderClear(renderer);
 
-        // draws circle
-        Rendermain.drawCircle(renderer, Ballmain, 30, true);
-
-        
-        SDL_RenderPresent(renderer);
 
 
     }

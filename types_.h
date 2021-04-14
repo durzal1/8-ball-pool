@@ -33,7 +33,7 @@ enum power{
     TWO = 20,
     THREE = 30,
     FOUR = 40,
-    FIVE = 50,
+    FIVE = 1000,
 
 };
 
