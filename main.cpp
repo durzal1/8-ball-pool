@@ -12,7 +12,12 @@
 
 
 int main(int argc, char* argv[]) {
-    ball Ballmain = ball(500, 500, FIVE, 0, SOLID, 0);
+    // y starting pos needs to be > 60 or else bugs occur
+    ball Ballmain = ball(500, 61, FIVE, 230, SOLID, 0);
+    render Rendermain = render();
+
+    ball Ball2 = ball(700, 500, NONE, 0, SOLID, 1);
+    std::vector<ball> balls = { Ball2 };
     render Rendermain = render();
 
     ball Ball2 = ball(700, 500, NONE, 0, SOLID, 1);
