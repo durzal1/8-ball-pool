@@ -29,11 +29,11 @@ enum DIRECTION{
 // it will correspond to the starting pixel value
 enum power{
     NONE = 0,
-    ONE = 10,
-    TWO = 20,
-    THREE = 30,
-    FOUR = 40,
-    FIVE = 1000,
+    ONE = 20,
+    TWO = 40,
+    THREE = 60,
+    FOUR = 80,
+    FIVE = 100,
 
 };
 

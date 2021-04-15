@@ -33,6 +33,8 @@ class ball{
     // direction the ball is currently moving (WILL BE A DEGREE)
     Degree angle;
 
+    // the velocity the ball starts at
+    int initial_vel;
 public:
     // how many pixels it is currently going per rotation
     // a rotation here is defined by when the ball is done moving the x amount and it about to decrease that x amount by one

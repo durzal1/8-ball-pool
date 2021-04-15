@@ -28,6 +28,7 @@ ball::ball(Pixel x, Pixel y, power velocity, Degree angle, ballType Balltype, in
     this->angle = angle;
     this->BallType = Balltype;
     this->innovation = innovation;
+    this->initial_vel = velocity;
 }
 //moving function
 void ball::move(std::vector<ball> &balls) {;
@@ -57,7 +58,8 @@ void ball::move(std::vector<ball> &balls) {;
     }
 
     // stops for a little bit
-    SDL_Delay(10);
+    int c = initial_vel - velocity;
+    SDL_Delay(c);
 
 }
 //function that will check if a collision has occurred with another ball
@@ -106,31 +108,62 @@ bool ball::checkForCollisionWall() {
 void ball::collisionWall(){
     float theta_radians;
     float theta2_radians;
-    if (ColWall == UP || ColWall == RIGHT) {
+    if (ColWall == UP) {
 
         // get the angle between the ball and point of collision
-        float delta_x = (this->x + Radius ) -this->x;
+        float delta_x = (this->x) -this->x;
         float delta_y =(this->y + Radius ) - this->y;
 
         theta_radians = atan2(delta_y, delta_x);
 
         // from the wall thats being collided into's perspective
-        float delta2_x = this->x - (this->x + Radius ) ;
+        float delta2_x = this->x - (this->x ) ;
         float delta2_y = this->y - (this->y + Radius );
 
         theta2_radians = atan2(delta2_y, delta2_x);
 
         int Deg2 = theta2_radians * 180/M_PI;
     }
-    else{
+    else if (ColWall == RIGHT) {
+
+        // get the angle between the ball and point of collision
+        float delta_x = (this->x + Radius) -this->x;
+        float delta_y =(this->y) - this->y;
+
+        theta_radians = atan2(delta_y, delta_x);
+
+        // from the wall thats being collided into's perspective
+        float delta2_x = this->x - (this->x + Radius ) ;
+        float delta2_y = this->y - (this->y );
+
+        theta2_radians = atan2(delta2_y, delta2_x);
+
+        int Deg2 = theta2_radians * 180/M_PI;
+    }
+    else if (ColWall == LEFT){
         // get the angle between the ball and point of collision
         float delta_x = (this->x - Radius ) -this->x;
-        float delta_y =(this->y - Radius ) - this->y;
+        float delta_y =(this->y  ) - this->y;
 
         theta_radians = atan2(delta_y, delta_x);
 
         // from the wall thats being collided into's perspective
         float delta2_x = this->x - (this->x - Radius ) ;
+        float delta2_y = this->y - (this->y  );
+
+        theta2_radians = atan2(delta2_y, delta2_x);
+
+        int Deg2 = theta2_radians * 180/M_PI;
+    }
+    else if (ColWall == DOWN){
+        // get the angle between the ball and point of collision
+        float delta_x = (this->x ) -this->x;
+        float delta_y =(this->y - Radius ) - this->y;
+
+        theta_radians = atan2(delta_y, delta_x);
+
+        // from the wall thats being collided into's perspective
+        float delta2_x = this->x - (this->x ) ;
         float delta2_y = this->y - (this->y - Radius );
 
         theta2_radians = atan2(delta2_y, delta2_x);
@@ -157,7 +190,7 @@ void ball::collisionWall(){
     int d1_deg = tan(d1) * 180/M_PI;
     int d2_deg = d2 * 180/M_PI;
 
-    this->velocity = 1000;
+//    this->velocity = 1000;
 
     this->angle = d2_deg;
     collided = true;
@@ -187,28 +220,25 @@ void ball::collisionBall(ball& ball1) {
     int m1 = 1;
     int m2 = 1;
 
-    int b_vel = this->velocity * ((sqrt(m1 + m2 + (2 * m1 * m2 * cos(theta_radians))) ) / (m1+ m2) );
-    int b1_vel = this->velocity * ((2 * m1) / (m1 + m2)) * sin(theta_radians/2);
-
     // gets the new velocity of each ball
-    int v1 = (this->velocity * (m1 - m2) + (2 * m2 * 0)) / (m1 + m2);
-    int v2 = (0 * (m2-m1) + (2 * m1 * this->velocity)) / (m1 + m2) ;
-
-    //todo set the ball to a wierd angle for it to collide then test
+    int b_vel = this->velocity * ((sqrt(m1 + m2 + (2 * m1 * m2 * cos(theta_radians))) ) / (m1+ m2) );
+    int b1_vel = abs(this->velocity * ((2 * m1) / (m1 + m2)) * sin(theta_radians/2));
 
     // gets the new direction of each ball
-    float d1 = ((m2 * sin(theta_radians)) / (m1 + (m2 * cos(theta_radians))));
+    float d1 = (M_PI - theta_radians) / 2;
     float d2 = (M_PI - theta2_radians) / 2;
 
     // convert to degrees
-    int d1_deg = tan(d1) * 180/M_PI;
+    int d1_deg = (d1) * 180/M_PI;
     int d2_deg = d2 * 180/M_PI;
 
     ball1.velocity = b_vel;
     this->velocity = b1_vel;
 
-    this->angle = d2_deg;
-    ball1.angle = d1_deg;
+    this->angle = d1_deg;
+    ball1.angle = d2_deg;
+
+    ball1.initial_vel = b_vel;
 
 
 

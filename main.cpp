@@ -12,10 +12,10 @@
 
 
 int main(int argc, char* argv[]) {
-    ball Ballmain = ball(500, 500, FIVE, 300, SOLID, 0);
+    ball Ballmain = ball(500, 500, FIVE, 0, SOLID, 0);
     render Rendermain = render();
-    ball Ball2 = ball(700, 650, NONE, 0, SOLID, 1);
 
+    ball Ball2 = ball(700, 500, NONE, 0, SOLID, 1);
     std::vector<ball> balls = { Ball2 };
        
     
@@ -58,6 +58,7 @@ int main(int argc, char* argv[]) {
         // removes one from the velocity
         Ballmain.velocity -= 1;
 
+        //todo to make this more effeicient for training in move just multiply the movement by new x and y by the velocity
         for (int i = 0; i < Ballmain.velocity; i ++) {
             // sets bg to pink
             SDL_SetRenderDrawColor(renderer, 255, 23, 255, 0);
@@ -72,6 +73,9 @@ int main(int argc, char* argv[]) {
                 if (Ball.velocity > 0){
                     // moves the ball
                     Ball.move(balls);
+
+                    // decreases velocity
+                    Ball.velocity -= 1;
                 }
                 Rendermain.drawCircle(renderer, Ball, 30, true);
             }
@@ -81,8 +85,31 @@ int main(int argc, char* argv[]) {
 
             SDL_RenderPresent(renderer);
         }
-       
+        SDL_SetRenderDrawColor(renderer, 255, 23, 255, 0);
 
+        SDL_RenderClear(renderer);
+
+        // does other balls if first ball stops
+        for (ball& Ball:balls){
+            if (Ball.velocity > 0){
+                // sets bg to pink
+
+
+                // moves the ball
+                Ball.move(balls);
+
+                // decreases velocity
+                Ball.velocity -= 1;
+
+            }
+            Rendermain.drawCircle(renderer, Ball, 30, true);
+        }
+        Rendermain.drawCircle(renderer, Ballmain, 30, true);
+
+        SDL_RenderPresent(renderer);
+
+
+        //todo this is not computing efficent at all, so change all of this latero n
 
 
     }
