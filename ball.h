@@ -10,10 +10,8 @@
 
 
 
-class ball{
-    // x and y cords
-    Pixel x;
-    Pixel y;
+class ball {
+    
 
     // if the ball is collided
     bool collided = false;
@@ -40,23 +38,37 @@ public:
     // a rotation here is defined by when the ball is done moving the x amount and it about to decrease that x amount by one
     int velocity;
 
+
+    // x and y cords
+    Pixel x;
+    Pixel y;
+
+    // velocities
+    float velx;
+    float vely;
+
+    float mass;
+
+    float ax, ay;
+
+
     // constructor
-    ball(Pixel x, Pixel y, power velocity, Degree angle, ballType Balltype, int innovation);
+    ball(Pixel x, Pixel y, power velocity, Degree angle, ballType Balltype, int innovation, float velx, float vely);
 
     // moving function
-    void move(std::vector<ball> &balls);
+    void move(std::vector<std::reference_wrapper<ball>>& balls);
 
     // sees if the ball has collided with another ball
     bool checkForCollisionBall(ball& ball);
 
     // sees if the ball has collided with a wall
-    bool checkForCollisionWall();
+    bool checkForCollisionWall(ball& ball);
 
     // if the ball has collided with another ball
     void collisionBall(ball& ball1);
 
     // if a ball has collided with the wall
-    void collisionWall();
+    void collisionWall(ball& ball);
 
     // calculates vector of the ball's circumference using radius
     void calculateCircumference();
@@ -67,8 +79,6 @@ public:
     // clears circumference (used to clear so it can draw new pixels after it has moved)
     void clearCir();
 
-    // sets x, y (for testing)
-    void moveOffset (int x, int y);
 
     // returns x, y
     SDL_Point getPixels();
