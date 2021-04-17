@@ -20,51 +20,48 @@ int XMAX = 900;
 int YMAX = 900;
 
 
+int frametime;
+const int FPS = 144;
+const int delay = 1000 / FPS;
+
+
 // constructor
-ball::ball(Pixel x, Pixel y, power velocity, Degree angle, ballType Balltype, int innovation) {
+ball::ball(Pixel x, Pixel y, power velocity, Degree angle, ballType Balltype, int innovation, float velx, float vely) {
     this->x = x;
     this->y = y;
+    this->velx = x;
+    this->vely = y;
     this->velocity = velocity;
     this->angle = angle;
     this->BallType = Balltype;
     this->innovation = innovation;
     this->initial_vel = velocity;
+    this->mass = Radius * 5.0f;
+    this->ax = 3.f;
+    this->ay = 3.f;
 }
 //moving function
-void ball::move(std::vector<ball>& balls) {
+void ball::move(std::vector<std::reference_wrapper<ball>> &balls) {
 
-    // calculates the new x and y
-    x += MoveRad * cos(angle * M_PI / 180);
-    y += MoveRad * sin(angle * M_PI / 180);
+    
+    float timeDelta = 1.0f / FPS;
 
-    /// if it collides
+    // calculates vels and x, y
+    this->velx += this->ax * timeDelta;
+    this->vely += this->ay * timeDelta;
+    this->x += this->velx * timeDelta;
+    this->y += this->vely * timeDelta;
 
-    // collides with ball
-    // for loop for each individual ball
-    for (ball& Ball : balls) {
-        if (Ball.innovation == innovation) {
-            Ball.x = x;
-            Ball.y = y;
-            continue;
-        }
-        if (checkForCollisionBall(Ball)) {
-            collisionBall(Ball);
-        }
+    
+    if (checkForCollisionWall(*this)) collisionWall(*this);
 
-    }
-    // collides with wall
-    if (checkForCollisionWall()) {
-        collisionWall();
-    }
-
-    // stops for a little bit
-    int c = initial_vel - velocity;
-    SDL_Delay(c);
 
 }
 //function that will check if a collision has occurred with another ball
 bool ball::checkForCollisionBall(ball& ball_) {
 
+    return fabs(powf(this->x - ball_.x, 2) + powf(this->y - ball_.y, 2)) <= pow(Radius * 2, 2);
+    /*
     // distance between each balls
     Dist dist = pow((ball_.x - this->x), 2) + pow((this->y - ball_.y), 2);
 
@@ -78,43 +75,48 @@ bool ball::checkForCollisionBall(ball& ball_) {
     }
 
     return false;
+    */
 }
 // function that will check if a collision has occurred with the wall
-bool ball::checkForCollisionWall() {
+bool ball::checkForCollisionWall(ball& ball) {
     // left wall
-    if (x - Radius <= 0) {
+    if (ball.x - Radius < 0) {
 
-        ColWall = LEFT;
+        ball.ColWall = LEFT;
         return true;
     }
     // up wall
-    else if (y + Radius >= YMAX) {
-        ColWall = UP;
+    else if (y + Radius > YMAX) {
+        ball.ColWall = UP;
         return true;
     }
     // right wall
-    else if (x + Radius >= XMAX) {
-        int l = x + (4 * Radius);
-        ColWall = RIGHT;
+    else if (ball.x + Radius > XMAX) {
+       // int l = x + (4 * Radius);
+        ball.ColWall = RIGHT;
         return true;
     }
     //down wall
-    else if (y - Radius <= 0) {
-        ColWall = DOWN;
+    else if (y - Radius < 0) {
+        ball.ColWall = DOWN;
         return true;
     }
     return false;
 }
 // function that will happen if a collision occurred with a wall
-void ball::collisionWall() {
+void ball::collisionWall(ball& ball) {
+    if (ball.ColWall == LEFT || ball.ColWall == RIGHT) ball.velx = -ball.velx;
+    else if (ball.ColWall == UP || ball.ColWall || DOWN) ball.vely = -ball.vely;
+    /*
     Degree org_angle = this->angle;
     float theta_radians;
     // get the angle between the ball and point of collision
-    theta_radians = atan2(this->x, this->y);
+    theta_radians = atan2f(x, y);
     float degs = theta_radians * (float)(180 / M_PI); // converts to degrees
     this->angle = org_angle - degs;
-    
-    
+
+    std::cout << 1;
+    */
     // old code just in case
     /*
     float theta_radians;
@@ -213,6 +215,37 @@ void ball::collisionWall() {
 
 // function that will happen if a collision occurred with a ball
 void ball::collisionBall(ball& ball1) {
+    // distance between balls
+    float dist = sqrtf(powf(this->x - ball1.x, 2) + powf(this->y - ball1.y, 2));
+
+    // Normal
+    float nx = (ball1.x - this->x) / dist;
+    float ny = (ball1.y - this->y) / dist;
+
+    // Tangent
+    float tx = -ny;
+    float ty = nx;
+
+    // dot prod tan
+    float dpTan1 = this->velx * tx + this->vely * ty;
+    float dpTan2 = ball1.velx * tx + ball1.vely * ty;
+
+    // dot prod norm
+    float dpNorm1 = this->velx * nx + this->vely * ny;
+    float dpNorm2 = ball1.velx * nx + ball1.vely * ny;
+
+    // conservation of mass
+    float m1 = (dpNorm1 * (this->mass - ball1.mass) + 2.0f * ball1.mass * dpNorm2) / (this->mass + ball1.mass);
+    float m2 = (dpNorm2 * (ball1.mass - this->mass) + 2.0f * this->mass * dpNorm1) / (this->mass + ball1.mass);
+    
+    // adds to velocities
+    this->velx = tx * dpTan1 + nx * m1;
+    this->vely = ty * dpTan1 + ny * m1;
+    ball1.velx = tx * dpTan2 + nx * m2;
+    ball1.vely = ty * dpTan2 + ny * m2;
+
+    // old code
+    /*
     // get the angle between the two balls
     float delta_x = ball1.x - this->x;
     float delta_y = ball1.y - this->y;
@@ -255,7 +288,7 @@ void ball::collisionBall(ball& ball1) {
 
     ball1.initial_vel = b_vel;
 
-
+    */
 
 }
 
