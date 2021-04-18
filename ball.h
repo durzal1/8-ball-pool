@@ -11,8 +11,10 @@
 
 
 class ball {
-    
 
+  
+
+private:
     // if the ball is collided
     bool collided = false;
 
@@ -27,15 +29,20 @@ class ball {
 
     // identification number for the side balls
     int innovation;
-
-    // direction the ball is currently moving (WILL BE A DEGREE)
-    Degree angle;
+    
+    // to not have duplicate innovations
+    static int nextInnovation;
 
     // the velocity the ball starts at
     int initial_vel;
 public:
-    // how many pixels it is currently going per rotation
-    // a rotation here is defined by when the ball is done moving the x amount and it about to decrease that x amount by one
+
+
+    // contains all balls as they are created
+    static std::vector<std::reference_wrapper<ball>> balls;
+    
+
+    // do not use anymore
     int velocity;
 
 
@@ -47,37 +54,30 @@ public:
     float velx;
     float vely;
 
+    // mass
     float mass;
-
+    
+    // acceleration
     float ax, ay;
 
 
     // constructor
-    ball(Pixel x, Pixel y, power velocity, Degree angle, ballType Balltype, int innovation, float velx, float vely);
+    ball(Pixel x, Pixel y, power velocity, ballType Balltype, float velx, float vely);
 
     // moving function
-    void move(std::vector<std::reference_wrapper<ball>>& balls);
+    void move();
 
     // sees if the ball has collided with another ball
     bool checkForCollisionBall(ball& ball);
 
     // sees if the ball has collided with a wall
-    bool checkForCollisionWall(ball& ball);
+    bool checkForCollisionWall();
 
     // if the ball has collided with another ball
     void collisionBall(ball& ball1);
 
     // if a ball has collided with the wall
-    void collisionWall(ball& ball);
-
-    // calculates vector of the ball's circumference using radius
-    void calculateCircumference();
-
-    // returns vector of circumference
-    std::vector<std::vector<Pixel>> getCir();
-
-    // clears circumference (used to clear so it can draw new pixels after it has moved)
-    void clearCir();
+    void collisionWall();
 
 
     // returns x, y
@@ -86,6 +86,7 @@ public:
     // returns color
     SDL_Color getColor();
 };
+
 
 
 
