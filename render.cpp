@@ -90,7 +90,9 @@ int render::drawCircle(SDL_Renderer* renderer, ball ball, int radius, bool fill)
             }
         }
     }
-    SDL_RenderPresent(renderer);
+
+
+
     return status;
 
 }
