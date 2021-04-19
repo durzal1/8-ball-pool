@@ -19,25 +19,28 @@ int MoveRad = 1;
 int XMAX = 900;
 int YMAX = 900;
 
-
+// for fixed FPS
 int frametime;
 const int FPS = 144;
 const int delay = 1000 / FPS;
 
 
+float friction = 0.8f;
+float stopBall = 3.2f;
+
 // constructor
-ball::ball(Pixel x, Pixel y, power velocity, ballType Balltype, float velx, float vely) {
+ball::ball(Pixel x, Pixel y, power p, ballType Balltype, float velx, float vely) {
     this->x = x;
     this->y = y;
-    this->velx = x;
-    this->vely = y;
-    this->velocity = velocity;
+    this->velx = velx;
+    this->vely = vely;
+    // TODO: implement power
+    this->initialPower = p;
     this->BallType = Balltype;
     this->innovation = innovation;
-    this->initial_vel = velocity;
     this->mass = Radius * 5.0f;
-    this->ax = 3.f;
-    this->ay = 3.f;
+    this->ax = 0;
+    this->ay = 0;
     this->innovation = 0;
 
     // updates innovation
@@ -49,13 +52,26 @@ ball::ball(Pixel x, Pixel y, power velocity, ballType Balltype, float velx, floa
 
 //moving function
 void ball::move() {
+    // calculates friction
+    this->ax = -this->velx * friction;
+    this->ay = -this->vely * friction;
 
-    // calculates vels and x, y
+
+    // calculates vels
     float timeDelta = 1.0f / FPS;
 
     
     this->velx += this->ax * timeDelta;
     this->vely += this->ay * timeDelta;
+    
+
+    // puts ball to a stop after slowing down certain amount
+    if (fabs(this->velx * this->velx + this->vely * this->vely) < stopBall) {
+        this->velx = 0, this->vely = 0;
+    }
+
+
+    // calculates x, y
     this->x += this->velx * timeDelta;
     this->y += this->vely * timeDelta;
 
@@ -72,6 +88,7 @@ void ball::move() {
             }
         }
     }
+
 
 }
 
