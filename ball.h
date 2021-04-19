@@ -33,8 +33,6 @@ private:
     // to not have duplicate innovations
     static int nextInnovation;
 
-    // the velocity the ball starts at
-    int initial_vel;
 public:
 
 
@@ -42,8 +40,8 @@ public:
     static std::vector<std::reference_wrapper<ball>> balls;
     
 
-    // do not use anymore
-    int velocity;
+    // input power
+    power initialPower;
 
 
     // x and y cords
@@ -62,7 +60,7 @@ public:
 
 
     // constructor
-    ball(Pixel x, Pixel y, power velocity, ballType Balltype, float velx, float vely);
+    ball(Pixel x, Pixel y, power p, ballType Balltype, float velx, float vely);
 
     // moving function
     void move();
