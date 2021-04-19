@@ -9,17 +9,23 @@
 
 #include <iostream>
 
-#include <SDL2/SDL.h> // works for kevin too now :D POG
+#include <SDL2/SDL.h>
 #include "ball.h"
-
+#include "goal.h"
 
 // TODO make render class
 
 class render {
 public:
     // draws circle
-    void drawCircle(SDL_Renderer* renderer, ball ball);
     int drawCircle(SDL_Renderer* renderer, ball ball, int radius, bool fill);
+
+    // draws goal
+    int drawGoal(SDL_Renderer *renderer,  goal Goal, bool fill);
+
+    // sets the boundary
+    int setBoundary(SDL_Renderer *renderer, int X, int Y, goal Goal);
+
 };
 
 

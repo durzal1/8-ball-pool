@@ -9,15 +9,14 @@
 
 #include <SDL2/SDL.h>
 
-// RADIUS CONSTANT
-int Radius = 30;
+
 
 // Radius for movement (should always be one)
 int MoveRad = 1;
 
 // x and y max constant in pixels
-int XMAX = 900;
-int YMAX = 900;
+int XMAX = 1600;
+int YMAX = 800;
 
 // for fixed FPS
 int frametime;
@@ -32,9 +31,8 @@ float stopBall = 3.2f;
 ball::ball(Pixel x, Pixel y, power p, ballType Balltype, float velx, float vely) {
     this->x = x;
     this->y = y;
-    this->velx = velx;
-    this->vely = vely;
-    // TODO: implement power
+    this->velx = velx * p;
+    this->vely = vely * p;
     this->initialPower = p;
     this->BallType = Balltype;
     this->innovation = innovation;

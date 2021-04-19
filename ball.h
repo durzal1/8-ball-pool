@@ -43,6 +43,8 @@ public:
     // input power
     power initialPower;
 
+    // RADIUS CONSTANT
+    int Radius = 20;
 
     // x and y cords
     Pixel x;
