@@ -23,12 +23,12 @@ int main(int argc, char* argv[]) {
 	// creates renderer, balls
 
 	render Rendermain = render();
-	ball Ballmain = ball(500.0f, 60.0f, TWO, SOLID, 0, 0);
+	ball Ballmain = ball(500.0f, 60.0f, TWO, SOLID, 500, 300);
 	ball Ball2 = ball(730.0f, 300.0f, FIVE, SOLID, 0, 0);
 	ball Ball3 = ball(850.0f, 200.0f, FIVE, BLACK, 0, 0);
 
 
-
+	
 
 
 
