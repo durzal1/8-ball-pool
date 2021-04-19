@@ -209,7 +209,7 @@ int render::setBoundary(SDL_Renderer *renderer, int WIDTH, int HEIGHT, goal Goal
     SDL_Rect r4{WIDTH / 2 + int(Goal.Radius * 1.8) , mosty, int(HEIGHT - (Goal.Radius * 4.7)), int(Goal.Radius * 1.5)};
     SDL_Rect r5{WIDTH / 2 + int(Goal.Radius * 1.8), 0, int(HEIGHT - (Goal.Radius * 4.4)), int(Goal.Radius * 1.5)};
 
-
+    //todo add real boundaries 
 
     // sets the render color to green
     SDL_SetRenderDrawColor(renderer, 0, 255, 0, 255);

@@ -1,0 +1,26 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+C:/Users/zacky/Desktop/Coding/c++/ml/pool/ball.h
+vector
+C:/Users/zacky/Desktop/Coding/c++/ml/pool/vector
+types_.h
+C:/Users/zacky/Desktop/Coding/c++/ml/pool/types_.h
+iostream
+-
+
+C:/Users/zacky/Desktop/Coding/c++/ml/pool/main.cpp
+iostream
+-
+ball.h
+C:/Users/zacky/Desktop/Coding/c++/ml/pool/ball.h
+SDL2/SDL.h
+-
+
+C:/Users/zacky/Desktop/Coding/c++/ml/pool/types_.h
+
