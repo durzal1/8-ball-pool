@@ -8,6 +8,7 @@
 #include <iostream>
 #include <SDL2/SDL.h>
 
+#include "goal.h"
 
 
 class ball {
@@ -65,13 +66,13 @@ public:
     ball(Pixel x, Pixel y, power p, ballType Balltype, float velx, float vely);
 
     // moving function
-    void move();
+    void move(std::vector<SDL_Rect> rects, int HEIGHT, goal Goal);
 
     // sees if the ball has collided with another ball
     bool checkForCollisionBall(ball& ball);
 
     // sees if the ball has collided with a wall
-    bool checkForCollisionWall();
+    bool checkForCollisionWall(std::vector<SDL_Rect> rects, int HEIGHT, goal Goal);
 
     // if the ball has collided with another ball
     void collisionBall(ball& ball1);

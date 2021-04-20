@@ -8,7 +8,7 @@
 #include <math.h>
 
 #include <SDL2/SDL.h>
-
+#include "goal.h"
 
 
 // Radius for movement (should always be one)
@@ -49,7 +49,7 @@ ball::ball(Pixel x, Pixel y, power p, ballType Balltype, float velx, float vely)
 }
 
 //moving function
-void ball::move() {
+void ball::move(std::vector<SDL_Rect> rects, int HEIGHT, goal Goal) {
     // calculates friction
     this->ax = -this->velx * friction;
     this->ay = -this->vely * friction;
@@ -58,10 +58,14 @@ void ball::move() {
     // calculates vels
     float timeDelta = 1.0f / FPS;
 
-    
-    this->velx += this->ax * timeDelta;
-    this->vely += this->ay * timeDelta;
-    
+
+    velx += this->ax * timeDelta;
+    vely += this->ay * timeDelta;
+
+
+
+
+
 
     // puts ball to a stop after slowing down certain amount
     if (fabs(this->velx * this->velx + this->vely * this->vely) < stopBall) {
@@ -75,7 +79,7 @@ void ball::move() {
 
     
     // wall collision
-    if (checkForCollisionWall()) collisionWall();
+    if (checkForCollisionWall(rects, HEIGHT, Goal)) collisionWall();
 
     // ball collision
     for (ball& b : balls) {
@@ -97,7 +101,31 @@ bool ball::checkForCollisionBall(ball& ball_) {
 
 }
 // function that will check if a collision has occurred with the wall
-bool ball::checkForCollisionWall() {
+bool ball::checkForCollisionWall(std::vector<SDL_Rect> rects, int WIDTH, goal Goal) {
+    for (SDL_Rect rect:rects){
+        // left and right
+        int x_ = int(WIDTH - Goal.Radius * 1.5);
+        if (rect.x == 0){
+            if (x - Radius * 1.5 <= rect.w + rect.x){
+                ColWall = LEFT;
+                return true;
+            }
+        }
+        else if( rect.x == int(WIDTH - Goal.Radius * 1.5)){
+            if (  ( (x + Radius >= rect.x) && (x + Radius <= rect.w + rect.x)  )){
+                ColWall = RIGHT;
+                return true;
+            }
+        }
+
+        // middle
+        else if( ( (x >= rect.x) && (x <= rect.w+ rect.x) )  &&  ( (y + Radius >= rect.y  &&  y + Radius <= rect.h+ rect.y) || (y - Radius >= rect.y  &&  y - Radius <= rect.h+ rect.y)  ) ){
+            ColWall = DOWN;
+            return true;
+        }
+    }
+
+
     // left wall
     if (x - Radius < 0) {
 

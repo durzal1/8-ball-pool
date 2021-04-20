@@ -195,7 +195,7 @@ int render::drawGoal(SDL_Renderer *renderer,  goal Goal, bool fill) {
 
 }
 // sets the extra boundaries
-int render::setBoundary(SDL_Renderer *renderer, int WIDTH, int HEIGHT, goal Goal) {
+std::vector<SDL_Rect> render::setBoundary(SDL_Renderer *renderer, int WIDTH, int HEIGHT, goal Goal) {
     // sets variables
     int leastx = 50, leasty = 50, mostx = int(WIDTH - Goal.Radius * 1.5), mosty = int(HEIGHT - Goal.Radius * 1.5);
 
@@ -209,7 +209,7 @@ int render::setBoundary(SDL_Renderer *renderer, int WIDTH, int HEIGHT, goal Goal
     SDL_Rect r4{WIDTH / 2 + int(Goal.Radius * 1.8) , mosty, int(HEIGHT - (Goal.Radius * 4.7)), int(Goal.Radius * 1.5)};
     SDL_Rect r5{WIDTH / 2 + int(Goal.Radius * 1.8), 0, int(HEIGHT - (Goal.Radius * 4.4)), int(Goal.Radius * 1.5)};
 
-    //todo add real boundaries 
+    //todo add real boundaries
 
     // sets the render color to green
     SDL_SetRenderDrawColor(renderer, 0, 255, 0, 255);
@@ -221,4 +221,15 @@ int render::setBoundary(SDL_Renderer *renderer, int WIDTH, int HEIGHT, goal Goal
     SDL_RenderFillRect(renderer, &r4);
     SDL_RenderFillRect(renderer, &r5);
     SDL_RenderFillRect(renderer, &r6);
+
+    // adds rectangles into a vector
+    std::vector<SDL_Rect> rects;
+    rects.push_back(r1);
+    rects.push_back(r2);
+    rects.push_back(r3);
+    rects.push_back(r4);
+    rects.push_back(r5);
+    rects.push_back(r6);
+
+    return rects;
 }

@@ -24,7 +24,7 @@ public:
     int drawGoal(SDL_Renderer *renderer,  goal Goal, bool fill);
 
     // sets the boundary
-    int setBoundary(SDL_Renderer *renderer, int X, int Y, goal Goal);
+    std::vector<SDL_Rect>  setBoundary(SDL_Renderer *renderer, int X, int Y, goal Goal);
 
 };
 
