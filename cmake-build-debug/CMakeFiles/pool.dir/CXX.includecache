@@ -15,6 +15,8 @@ math.h
 -
 SDL2/SDL.h
 -
+goal.h
+C:/Users/zacky/Desktop/Coding/c++/ml/pool/goal.h
 
 C:/Users/zacky/Desktop/Coding/c++/ml/pool/ball.h
 vector
@@ -25,6 +27,8 @@ iostream
 -
 SDL2/SDL.h
 -
+goal.h
+C:/Users/zacky/Desktop/Coding/c++/ml/pool/goal.h
 
 C:/Users/zacky/Desktop/Coding/c++/ml/pool/goal.h
 types_.h
