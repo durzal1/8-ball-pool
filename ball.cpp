@@ -100,6 +100,7 @@ bool ball::checkForCollisionBall(ball& ball_) {
     return fabs(powf(this->x - ball_.x, 2) + powf(this->y - ball_.y, 2)) <= pow(Radius * 2, 2);
 
 }
+//
 // function that will check if a collision has occurred with the wall
 bool ball::checkForCollisionWall(std::vector<SDL_Rect> rects, int WIDTH, goal Goal) {
     for (SDL_Rect rect:rects){

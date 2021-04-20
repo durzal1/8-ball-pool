@@ -12,7 +12,7 @@
 
 
 #include <SDL2/SDL.h>
-
+//
 
 // initializes innovation
 int ball::nextInnovation = 0;

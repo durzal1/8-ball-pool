@@ -27,7 +27,7 @@ public:
     std::vector<SDL_Rect>  setBoundary(SDL_Renderer *renderer, int X, int Y, goal Goal);
 
 };
-
+//
 
 
 #endif //POOL_RENDER_H

@@ -233,3 +233,4 @@ std::vector<SDL_Rect> render::setBoundary(SDL_Renderer *renderer, int WIDTH, int
 
     return rects;
 }
+//

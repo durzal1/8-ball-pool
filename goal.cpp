@@ -15,3 +15,4 @@ goal::goal(Pixel x, Pixel y, int Radius){
 SDL_Point goal::getPixels() {
     return SDL_Point({int(x), int(y)});
 }
+//
