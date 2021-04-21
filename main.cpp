@@ -27,7 +27,7 @@ int main(int argc, char* argv[]) {
     // creates renderer, balls
 
 	render Rendermain = render();
-	ball Ballmain = ball(500.0f, 60.0f, FIVE, SOLID, -500, 300);
+	ball Ballmain = ball(70.0f, 80.0f, FIVE, SOLID, -0, -70);
 	ball Ball2 = ball(730.0f, 300.0f, NONE, SOLID, 0, 0);
 	ball Ball3 = ball(850.0f, 200.0f, NONE, BLACK, 0, 0);
 
@@ -97,13 +97,14 @@ int main(int argc, char* argv[]) {
         // clears screen
         SDL_RenderClear(renderer);
 
-        // sets the boundary
+        // sets the boundaries
         std::vector<SDL_Rect> rects = Rendermain.setBoundary(renderer, width, height, Goal1);
+        std::vector<SDL_Point> points = Rendermain.setBoundary2(renderer, Goals, rects);
 
 
         // moves every ball
 		for (ball& b : ball::balls){
-            b.move(rects, width, Goal1);
+            b.move(rects, width, Goal1, points);
 
             // draws each ball
             Rendermain.drawCircle(renderer, b, b.Radius, true);
@@ -131,8 +132,8 @@ int main(int argc, char* argv[]) {
         // sets framerate to 144 by delaying each frame if needed
 		Uint32 frametime = SDL_GetTicks() - framestart;
 		if (1000 / 144 > frametime) SDL_Delay(1000 / 144 - frametime);
+		SDL_Delay(220);
 
-	    SDL_Delay(50);
 	}
 
 

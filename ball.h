@@ -66,13 +66,13 @@ public:
     ball(Pixel x, Pixel y, power p, ballType Balltype, float velx, float vely);
 
     // moving function
-    void move(std::vector<SDL_Rect> rects, int HEIGHT, goal Goal);
+    void move(std::vector<SDL_Rect> rects, int HEIGHT, goal Goal, std::vector<SDL_Point> points);
 
     // sees if the ball has collided with another ball
     bool checkForCollisionBall(ball& ball);
 
     // sees if the ball has collided with a wall
-    bool checkForCollisionWall(std::vector<SDL_Rect> rects, int HEIGHT, goal Goal);
+    bool checkForCollisionWall(std::vector<SDL_Rect> rects, int HEIGHT, goal Goal, std::vector<SDL_Point> points);
 
     // if the ball has collided with another ball
     void collisionBall(ball& ball1);

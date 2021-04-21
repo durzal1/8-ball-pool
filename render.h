@@ -13,7 +13,6 @@
 #include "ball.h"
 #include "goal.h"
 
-// TODO make render class
 
 class render {
 public:
@@ -25,6 +24,9 @@ public:
 
     // sets the boundary
     std::vector<SDL_Rect>  setBoundary(SDL_Renderer *renderer, int X, int Y, goal Goal);
+
+    // sets the secondary boundaries
+    std::vector<SDL_Point>  setBoundary2(SDL_Renderer *renderer, std::vector<goal> goals, std::vector<SDL_Rect> rects);
 
 };
 //

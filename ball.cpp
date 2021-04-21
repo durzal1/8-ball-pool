@@ -49,7 +49,7 @@ ball::ball(Pixel x, Pixel y, power p, ballType Balltype, float velx, float vely)
 }
 
 //moving function
-void ball::move(std::vector<SDL_Rect> rects, int HEIGHT, goal Goal) {
+void ball::move(std::vector<SDL_Rect> rects, int HEIGHT, goal Goal, std::vector<SDL_Point> points) {
     // calculates friction
     this->ax = -this->velx * friction;
     this->ay = -this->vely * friction;
@@ -61,10 +61,6 @@ void ball::move(std::vector<SDL_Rect> rects, int HEIGHT, goal Goal) {
 
     velx += this->ax * timeDelta;
     vely += this->ay * timeDelta;
-
-
-
-
 
 
     // puts ball to a stop after slowing down certain amount
@@ -79,7 +75,7 @@ void ball::move(std::vector<SDL_Rect> rects, int HEIGHT, goal Goal) {
 
     
     // wall collision
-    if (checkForCollisionWall(rects, HEIGHT, Goal)) collisionWall();
+    if (checkForCollisionWall(rects, HEIGHT, Goal, points)) collisionWall();
 
     // ball collision
     for (ball& b : balls) {
@@ -102,18 +98,19 @@ bool ball::checkForCollisionBall(ball& ball_) {
 }
 //
 // function that will check if a collision has occurred with the wall
-bool ball::checkForCollisionWall(std::vector<SDL_Rect> rects, int WIDTH, goal Goal) {
+bool ball::checkForCollisionWall(std::vector<SDL_Rect> rects, int WIDTH, goal Goal, std::vector<SDL_Point> points) {
+    // checks with the primary boundary
     for (SDL_Rect rect:rects){
         // left and right
         int x_ = int(WIDTH - Goal.Radius * 1.5);
         if (rect.x == 0){
-            if (x - Radius * 1.5 <= rect.w + rect.x){
+            if (x - Radius * 1.5 <= rect.w + rect.x && y > rect.y && y < rect.y + rect.h){
                 ColWall = LEFT;
                 return true;
             }
         }
         else if( rect.x == int(WIDTH - Goal.Radius * 1.5)){
-            if (  ( (x + Radius >= rect.x) && (x + Radius <= rect.w + rect.x)  )){
+            if (  ( (x + Radius >= rect.x) && (x + Radius <= rect.w + rect.x)  ) && y > rect.y && y < rect.y + rect.h){
                 ColWall = RIGHT;
                 return true;
             }
@@ -126,29 +123,35 @@ bool ball::checkForCollisionWall(std::vector<SDL_Rect> rects, int WIDTH, goal Go
         }
     }
 
+    // checks with the secondary boundary
+    for (int i = 0; i < points.size(); i ++){
+        SDL_Point point1 = points[i];
+        SDL_Point point2 = points[i+1];
 
-    // left wall
-    if (x - Radius < 0) {
+        // makes sure it is the first point of the line
+        if (i % 2 != 0){
+            continue;
+        }
 
-        ColWall = LEFT;
-        return true;
-    }
-    // up wall
-    else if (y + Radius > YMAX) {
-        ColWall = UP;
-        return true;
-    }
-    // right wall
-    else if (x + Radius > XMAX) {
+        bool o = point1.x < x;
+        bool o2 = x < point2.x;
+        bool o3 =  point1.y < y - Radius;
+        bool o4 =  y < point2.y;
 
-        ColWall = RIGHT;
-        return true;
+        if ( point2.x < x && x - Radius < point1.x && point2.y < y  && y< point1.y){
+            velx = -velx;
+            velx = -vely;
+            return true;
+        }
+        else if (point1.x < x && x < point2.x && point1.y < y && y - Radius < point2.y){
+            velx = -velx;
+            velx = -vely;
+            return true;
+        }
+        // todo do the collisions for the rest of the slanted angles
+
     }
-    //down wall
-    else if (y - Radius < 0) {
-        ColWall = DOWN;
-        return true;
-    }
+
     return false;
 }
 
