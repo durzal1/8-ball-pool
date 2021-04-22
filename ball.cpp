@@ -99,56 +99,173 @@ bool ball::checkForCollisionBall(ball& ball_) {
 //
 // function that will check if a collision has occurred with the wall
 bool ball::checkForCollisionWall(std::vector<SDL_Rect> rects, int WIDTH, goal Goal, std::vector<SDL_Point> points) {
-    // checks with the primary boundary
+    FrameSinceLast ++;
+    if (innovation != 1){
+        return false; //todo REMOVE
+    }
+    /// checks with the primary boundary
+
+
     for (SDL_Rect rect:rects){
+
         // left and right
-        int x_ = int(WIDTH - Goal.Radius * 1.5);
         if (rect.x == 0){
-            if (x - Radius * 1.5 <= rect.w + rect.x && y > rect.y && y < rect.y + rect.h){
-                ColWall = LEFT;
-                return true;
+            if (x - Radius<= rect.w + rect.x && y > rect.y && y < rect.y + rect.h){
+                count_left ++;
+
+                if (count_left == 1){
+                    ColWall = LEFT;
+                    WierdAngle = true;
+                    goLeft = false;
+                    return true;
+                }
+
+                if (goLeft){
+                    ColWall = LEFT;
+                    return true;
+                }
             }
+
         }
         else if( rect.x == int(WIDTH - Goal.Radius * 1.5)){
             if (  ( (x + Radius >= rect.x) && (x + Radius <= rect.w + rect.x)  ) && y > rect.y && y < rect.y + rect.h){
-                ColWall = RIGHT;
+                if (!WierdAngle){
+                    ColWall = RIGHT;
+                    WierdAngle = true;
+                    goRight = false;
+                    return true;
+                }
+                if (goRight){
+                    ColWall = RIGHT;
+                    return true;
+                }
+            }
+
+        }
+
+        // middle
+
+        // if its in the wall
+        else if( ( ( (x + Radius >= rect.x) && (x <= rect.w+ rect.x) ) || ( (x >= rect.x) && (x - Radius<= rect.w+ rect.x) )) &&  ( (y + Radius >= rect.y  &&  y +Radius <= rect.h+ rect.y) || (y - Radius <= rect.y  &&  y - Radius >= rect.h+ rect.y)  ) ){
+
+             if (!WierdAngle){
+                ColWall = DOWN;
+                WierdAngle = true;
+                goUpDown = false;
+                return true;
+            }
+            if (goUpDown){
+                 ColWall = DOWN;
+                 return true;
+            }
+        }
+        else if ((x >= rect.x) && x - Radius<= rect.w+ rect.x && (y - Radius >= rect.y  &&  y - Radius <= rect.h+ rect.y)){
+            if (!WierdAngle){
+                ColWall = DOWN;
+                WierdAngle = true;
+                return true;
+            }
+            if (goUpDown){
+                ColWall = DOWN;
                 return true;
             }
         }
 
-        // middle
-        else if( ( (x >= rect.x) && (x <= rect.w+ rect.x) )  &&  ( (y + Radius >= rect.y  &&  y + Radius <= rect.h+ rect.y) || (y - Radius >= rect.y  &&  y - Radius <= rect.h+ rect.y)  ) ){
-            ColWall = DOWN;
-            return true;
-        }
+
     }
-
-    // checks with the secondary boundary
+    if (FrameSinceLast < 3){
+        return false;
+    }
+    /// checks with the secondary boundary
     for (int i = 0; i < points.size(); i ++){
-        SDL_Point point1 = points[i];
-        SDL_Point point2 = points[i+1];
-
         // makes sure it is the first point of the line
         if (i % 2 != 0){
             continue;
         }
 
-        bool o = point1.x < x;
-        bool o2 = x < point2.x;
-        bool o3 =  point1.y < y - Radius;
-        bool o4 =  y < point2.y;
 
-        if ( point2.x < x && x - Radius < point1.x && point2.y < y  && y< point1.y){
+        SDL_Point point1 = points[i];
+        SDL_Point point2 = points[i+1];
+
+
+
+        // top left
+        if ( point2.x < x && x < point1.x && point2.y < y  && y< point1.y){
             velx = -velx;
-            velx = -vely;
-            return true;
+            vely = -vely;
+            FrameSinceLast = 0;
+            return false;
         }
-        else if (point1.x < x && x < point2.x && point1.y < y && y - Radius < point2.y){
+        else if (point1.x < x && x < point2.x && point1.y < y && y  < point2.y){
             velx = -velx;
-            velx = -vely;
-            return true;
+            vely = -vely;
+            FrameSinceLast = 0;
+            return false;
         }
-        // todo do the collisions for the rest of the slanted angles
+
+        // bottom left
+        else if ( point2.x < x && x < point1.x && point2.y > y  && y> point1.y){
+            velx = -velx;
+            vely = -vely;
+            FrameSinceLast = 0;
+            return false;
+        }
+        else if (point1.x < x && x < point2.x && point1.y > y && y > point2.y){
+            velx = -velx;
+            vely = -vely;
+            FrameSinceLast = 0;
+            return false;
+        }
+        //todo add goal collisions
+        // 2 main issues rn
+        // 1) the slanted collisions are only accurate 50% time where you would need to change the x and y
+        // the other 50% where you only need to change one arent accurate
+        // the only way to solve this is to make a function that can find which one it is
+        // 2) its possible that it might get stuck in the walls sometimes too
+
+        // top right
+        else if ( point1.x  > x  && x   > point2.x && point1.y < y   && y  < point2.y){
+            velx = -velx;
+            vely = -vely;
+            FrameSinceLast = 0;
+            return false;
+        }
+        else if (point1.x < x && x < point2.x && point1.y > y && y  > point2.y){
+            velx = -velx;
+            vely = -vely;
+            FrameSinceLast = 0;
+            return false;
+        }
+
+        // bottom right
+        else if ( point1.x  > x  && x   > point2.x && point1.y < y   && y  < point2.y){
+            velx = -velx;
+            vely = -vely;
+            FrameSinceLast = 0;
+            return false;
+        }
+        else if (point1.x < x && x < point2.x && point1.y > y && y  > point2.y){
+            velx = -velx;
+            vely = -vely;
+            FrameSinceLast = 0;
+            return false;
+        }
+
+        // mid top
+        else if ( point1.x < x && x - 7 < point2.x && point1.y > y  && y  > point2.y){
+            velx = -velx;
+            vely = -vely;
+            FrameSinceLast = 0;
+            return false;
+        }
+        else if (point1.x < x && x < point2.x && point1.y > y && y  > point2.y){
+            velx = -velx;
+            vely = -vely;
+            FrameSinceLast = 0;
+            return false;
+        }
+
+
 
     }
 

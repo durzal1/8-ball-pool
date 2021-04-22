@@ -27,7 +27,7 @@ int main(int argc, char* argv[]) {
     // creates renderer, balls
 
 	render Rendermain = render();
-	ball Ballmain = ball(70.0f, 80.0f, FIVE, SOLID, -0, -70);
+	ball Ballmain = ball(70.0f, 70.0f, FIVE, SOLID, -130, -40);
 	ball Ball2 = ball(730.0f, 300.0f, NONE, SOLID, 0, 0);
 	ball Ball3 = ball(850.0f, 200.0f, NONE, BLACK, 0, 0);
 
@@ -132,7 +132,7 @@ int main(int argc, char* argv[]) {
         // sets framerate to 144 by delaying each frame if needed
 		Uint32 frametime = SDL_GetTicks() - framestart;
 		if (1000 / 144 > frametime) SDL_Delay(1000 / 144 - frametime);
-		SDL_Delay(220);
+		SDL_Delay(130);
 
 	}
 

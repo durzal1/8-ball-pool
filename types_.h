@@ -20,6 +20,7 @@ enum ballType{
 };
 // direction of the wall
 enum DIRECTION{
+    NONE1 = -1,
     LEFT = 0,
     UP = 1,
     RIGHT = 2,

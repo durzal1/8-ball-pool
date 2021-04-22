@@ -20,7 +20,7 @@ private:
     bool collided = false;
 
     // direction the ball collided with the wall
-    DIRECTION ColWall;
+    DIRECTION ColWall = NONE1;
 
     // if its solid or stripe or black
     ballType BallType;
@@ -61,6 +61,17 @@ public:
     // acceleration
     float ax, ay;
 
+    // frames since last wall collision
+    int FrameSinceLast = 4;
+
+    // if it hits the wall at a wierd angle
+    bool WierdAngle = false;
+
+    // helps with clip bugs
+    int count_left = 0;
+    bool goLeft = true;
+    bool goUpDown = true;
+    bool goRight = true;
 
     // constructor
     ball(Pixel x, Pixel y, power p, ballType Balltype, float velx, float vely);
