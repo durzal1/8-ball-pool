@@ -12,8 +12,8 @@
 
 
 class ball {
-//
-  
+    //
+
 
 private:
     // if the ball is collided
@@ -30,7 +30,7 @@ private:
 
     // identification number for the side balls
     int innovation;
-    
+
     // to not have duplicate innovations
     static int nextInnovation;
 
@@ -39,7 +39,7 @@ public:
 
     // contains all balls as they are created
     static std::vector<std::reference_wrapper<ball>> balls;
-    
+
 
     // input power
     power initialPower;
@@ -57,21 +57,13 @@ public:
 
     // mass
     float mass;
-    
+
     // acceleration
     float ax, ay;
 
     // frames since last wall collision
     int FrameSinceLast = 4;
 
-    // if it hits the wall at a wierd angle
-    bool WierdAngle = false;
-
-    // helps with clip bugs
-    int count_left = 0;
-    bool goLeft = true;
-    bool goUpDown = true;
-    bool goRight = true;
 
     // constructor
     ball(Pixel x, Pixel y, power p, ballType Balltype, float velx, float vely);
@@ -82,14 +74,12 @@ public:
     // sees if the ball has collided with another ball
     bool checkForCollisionBall(ball& ball);
 
-    // sees if the ball has collided with a wall
-    bool checkForCollisionWall(std::vector<SDL_Rect> rects, int HEIGHT, goal Goal, std::vector<SDL_Point> points);
+    // handles ball collision with walls
+    bool collisionAllWalls(std::vector<SDL_Rect> rects, int HEIGHT, goal Goal, std::vector<SDL_Point> points);
 
     // if the ball has collided with another ball
     void collisionBall(ball& ball1);
 
-    // if a ball has collided with the wall
-    void collisionWall();
 
 
     // returns x, y
