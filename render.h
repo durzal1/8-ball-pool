@@ -15,18 +15,20 @@
 
 
 class render {
+    // half of ball radius
+    int offset = 15;
 public:
     // draws circle
     int drawCircle(SDL_Renderer* renderer, ball ball, int radius, bool fill);
 
     // draws goal
-    int drawGoal(SDL_Renderer *renderer,  goal Goal, bool fill);
+    int drawGoal(SDL_Renderer* renderer, goal Goal, bool fill);
 
     // sets the boundary
-    std::vector<SDL_Rect>  setBoundary(SDL_Renderer *renderer, int X, int Y, goal Goal);
+    std::vector<SDL_Rect>  setBoundary(SDL_Renderer* renderer, int X, int Y, goal Goal);
 
     // sets the secondary boundaries
-    std::vector<SDL_Point>  setBoundary2(SDL_Renderer *renderer, std::vector<goal> goals, std::vector<SDL_Rect> rects);
+    std::vector<SDL_Point>  setBoundary2(SDL_Renderer* renderer, std::vector<goal> goals, std::vector<SDL_Rect> rects);
 
 };
 //
