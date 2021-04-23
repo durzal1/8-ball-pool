@@ -98,7 +98,7 @@ int render::drawCircle(SDL_Renderer* renderer, ball ball, int radius, bool fill)
 }
 
 // draws goal
-int render::drawGoal(SDL_Renderer *renderer,  goal Goal, bool fill) {
+int render::drawGoal(SDL_Renderer* renderer, goal Goal, bool fill) {
 
     int r = 255;
     int g = 0;
@@ -160,13 +160,13 @@ int render::drawGoal(SDL_Renderer *renderer,  goal Goal, bool fill) {
         while (offsety >= offsetx) {
 
             status += SDL_RenderDrawLine(renderer, x - offsety, y + offsetx,
-                                         x + offsety, y + offsetx);
+                x + offsety, y + offsetx);
             status += SDL_RenderDrawLine(renderer, x - offsetx, y + offsety,
-                                         x + offsetx, y + offsety);
+                x + offsetx, y + offsety);
             status += SDL_RenderDrawLine(renderer, x - offsetx, y - offsety,
-                                         x + offsetx, y - offsety);
+                x + offsetx, y - offsety);
             status += SDL_RenderDrawLine(renderer, x - offsety, y - offsetx,
-                                         x + offsety, y - offsetx);
+                x + offsety, y - offsetx);
 
             if (status < 0) {
                 status = -1;
@@ -196,23 +196,23 @@ int render::drawGoal(SDL_Renderer *renderer,  goal Goal, bool fill) {
 }
 // sets the extra boundaries
 // returns the points for said boundaries
-std::vector<SDL_Rect> render::setBoundary(SDL_Renderer *renderer, int WIDTH, int HEIGHT, goal Goal) {
+std::vector<SDL_Rect> render::setBoundary(SDL_Renderer* renderer, int WIDTH, int HEIGHT, goal Goal) {
     // sets variables
     int leastx = 50, leasty = 50, mostx = int(WIDTH - Goal.Radius * 1.5), mosty = int(HEIGHT - Goal.Radius * 1.5);
 
     // creates the rectangles to represent the borders
 
     // left and right
-    SDL_Rect r1{0, int(Goal.Radius * 2.8), int(Goal.Radius * 1.5), int(HEIGHT - (Goal.Radius * 5.6))};
-    SDL_Rect r6{mostx, int(Goal.Radius * 2.8), int(Goal.Radius * 1.5), int(HEIGHT - (Goal.Radius * 5.6))};
-
+    SDL_Rect r1{ 0, int(Goal.Radius * 2.8), int(Goal.Radius * 1.5), int(HEIGHT - (Goal.Radius * 5.6)) };
+    SDL_Rect r6{ mostx, int(Goal.Radius * 2.8), int(Goal.Radius * 1.5), int(HEIGHT - (Goal.Radius * 5.6)) };
+ 
     // mid left
-    SDL_Rect r2{int(Goal.Radius * 2.8), 0, int(HEIGHT - (Goal.Radius * 4.4)), int(Goal.Radius * 1.5)};
-    SDL_Rect r3{int(Goal.Radius * 2.8), mosty, int(HEIGHT - (Goal.Radius * 4.4)), int(Goal.Radius * 1.5)};
+    SDL_Rect r2{ int(Goal.Radius * 2.8), 0, int(HEIGHT - (Goal.Radius * 4.4)), int(Goal.Radius * 1.5) };
+    SDL_Rect r3{ int(Goal.Radius * 2.8), mosty, int(HEIGHT - (Goal.Radius * 4.4)), int(Goal.Radius * 1.5) };
 
     // mid right
-    SDL_Rect r4{WIDTH / 2 + int(Goal.Radius * 1.8) , mosty, int(HEIGHT - (Goal.Radius * 4.7)), int(Goal.Radius * 1.5)};
-    SDL_Rect r5{WIDTH / 2 + int(Goal.Radius * 1.8), 0, int(HEIGHT - (Goal.Radius * 4.4)), int(Goal.Radius * 1.5)};
+    SDL_Rect r4{ WIDTH / 2 + int(Goal.Radius * 1.8) , mosty, int(HEIGHT - (Goal.Radius * 4.7)), int(Goal.Radius * 1.5) };
+    SDL_Rect r5{ WIDTH / 2 + int(Goal.Radius * 1.8), 0, int(HEIGHT - (Goal.Radius * 4.4)), int(Goal.Radius * 1.5) };
 
     // sets the render color to green
     SDL_SetRenderDrawColor(renderer, 0, 255, 0, 255);
@@ -238,7 +238,7 @@ std::vector<SDL_Rect> render::setBoundary(SDL_Renderer *renderer, int WIDTH, int
 }
 // sets the secondary boundaries next to the goals
 // returns the points for said boundaries
-std::vector<SDL_Point> render::setBoundary2(SDL_Renderer *renderer, std::vector<goal> goals, std::vector<SDL_Rect> rects) {
+std::vector<SDL_Point> render::setBoundary2(SDL_Renderer* renderer, std::vector<goal> goals, std::vector<SDL_Rect> rects) {
     // sets each rect to a variable
     SDL_Rect r1 = rects[0];
     SDL_Rect r2 = rects[1];
@@ -247,54 +247,55 @@ std::vector<SDL_Point> render::setBoundary2(SDL_Renderer *renderer, std::vector<
     SDL_Rect r5 = rects[4];
     SDL_Rect r6 = rects[5];
 
+    
     // sets the render color to red
     SDL_SetRenderDrawColor(renderer, 100, 203, 255, 255);
 
     /// creates the points
 
     // top left
-    SDL_Point point1 = {r1.w, r1.y};
-    SDL_Point point1_ = {r1.w / 5, r1.w};
+    SDL_Point point1 = { r1.w, r1.y };
+    SDL_Point point1_ = { r1.w / 5, r1.w };
 
-    SDL_Point point2 = {int(goals[0].x + goals[0].Radius) ,int(goals[0].y)};
-    SDL_Point point2_ = {r2.x, r2.y + int(goals[0].Radius * 1.5)};
+    SDL_Point point2 = { int(goals[0].x + goals[0].Radius) ,int(goals[0].y) };
+    SDL_Point point2_ = { r2.x, r2.y + int(goals[0].Radius * 1.5) };
 
 
     // bottom left
-    SDL_Point point3 = {r1.w, r1.y + r1.h};
-    SDL_Point point3_ = {r1.w / 10 - 10,int(goals[1].y)};
+    SDL_Point point3 = { r1.w, r1.y + r1.h };
+    SDL_Point point3_ = { r1.w / 10 - 10,int(goals[1].y) };
 
-    SDL_Point point4 = {int(goals[1].x + goals[0].Radius) ,int(goals[1].y) + 7};
-    SDL_Point point4_ = {r3.x, r3.y};
+    SDL_Point point4 = { int(goals[1].x + goals[0].Radius) ,int(goals[1].y) + 7 };
+    SDL_Point point4_ = { r3.x, r3.y };
 
 
     // top mid
-    SDL_Point point5 = {r2.w + r2.x, r2.h};
-    SDL_Point point5_ = {int(goals[5].x - goals[5].Radius),int(goals[5].y)};
+    SDL_Point point5 = { r2.w + r2.x, r2.h };
+    SDL_Point point5_ = { int(goals[5].x - goals[5].Radius),int(goals[5].y) };
 
-    SDL_Point point6 = {int(goals[5].x + goals[5].Radius) ,int(goals[5].y)};
-    SDL_Point point6_ = {r5.x, r3.h};
+    SDL_Point point6 = { int(goals[5].x + goals[5].Radius) ,int(goals[5].y) };
+    SDL_Point point6_ = { r5.x, r3.h };
 
     // bottom mid
-    SDL_Point point7 = {r3.x + r3.w, r3.y};
-    SDL_Point point7_ = {int(goals[4].x - goals[4].Radius),int(goals[4].y)};
+    SDL_Point point7 = { r3.x + r3.w, r3.y };
+    SDL_Point point7_ = { int(goals[4].x - goals[4].Radius),int(goals[4].y) };
 
-    SDL_Point point8 = {int(goals[4].x + goals[4].Radius) ,int(goals[4].y)};
-    SDL_Point point8_ = {r4.x, r4.y};
+    SDL_Point point8 = { int(goals[4].x + goals[4].Radius) ,int(goals[4].y) };
+    SDL_Point point8_ = { r4.x, r4.y };
 
     // top right
-    SDL_Point point9 = {r6.x, r6.y};
-    SDL_Point point9_ = {int(goals[3].x + goals[3].Radius) ,int(goals[3].y)};
+    SDL_Point point9 = { r6.x, r6.y };
+    SDL_Point point9_ = { int(goals[3].x + goals[3].Radius) ,int(goals[3].y) };
 
-    SDL_Point point10 = {int(goals[3].x - goals[3].Radius) ,int(goals[3].y - 10)};
-    SDL_Point point10_ = {r5.x + r5.w, r5.y + r5.h};
+    SDL_Point point10 = { int(goals[3].x - goals[3].Radius) ,int(goals[3].y - 10) };
+    SDL_Point point10_ = { r5.x + r5.w, r5.y + r5.h };
 
     // bottom right
-    SDL_Point point11 = {r6.x, r6.y + r6.h};
-    SDL_Point point11_ = {int(goals[2].x + goals[2].Radius) ,int(goals[2].y)};
+    SDL_Point point11 = { r6.x, r6.y + r6.h };
+    SDL_Point point11_ = { int(goals[2].x + goals[2].Radius) ,int(goals[2].y) };
 
-    SDL_Point point12 = {int(goals[2].x - goals[2].Radius) ,int(goals[2].y + 10)};
-    SDL_Point point12_ = {r4.x + r4.w, r4.y};
+    SDL_Point point12 = { int(goals[2].x - goals[2].Radius) ,int(goals[2].y + 10) };
+    SDL_Point point12_ = { r4.x + r4.w, r4.y };
 
     // renders all the lines
     SDL_RenderDrawLine(renderer, point1.x, point1.y, point1_.x, point1_.y);
@@ -314,6 +315,9 @@ std::vector<SDL_Point> render::setBoundary2(SDL_Renderer *renderer, std::vector<
 
     SDL_RenderDrawLine(renderer, point11.x, point11.y, point11_.x, point11_.y);
     SDL_RenderDrawLine(renderer, point12.x, point12.y, point12_.x, point12_.y);
+
+
+    
 
     // adds the points to a vector
     std::vector<SDL_Point> points;
@@ -352,6 +356,38 @@ std::vector<SDL_Point> render::setBoundary2(SDL_Renderer *renderer, std::vector<
 
     points.push_back(point12);
     points.push_back(point12_);
+
+
+    // points on the side facing inwards on rectangles
+    SDL_Point r1p1 = { r1.x + r1.w + offset, r1.y };
+    SDL_Point r1p2 = { r1.x + offset, r1.y + r1.h };
+    points.push_back(r1p1);
+    points.push_back(r1p2);
+
+    SDL_Point r2p1 = { r2.x , r2.y + r2.h };
+    SDL_Point r2p2 = { r2.x + r2.w, r2.y + r2.h };
+    points.push_back(r2p1);
+    points.push_back(r2p2);
+
+    SDL_Point r3p1 = { r3.x , r3.y};
+    SDL_Point r3p2 = { r3.x + r3.w , r3.y };
+    points.push_back(r3p1);
+    points.push_back(r3p2);
+
+    SDL_Point r4p1 = { r4.x , r4.y  };
+    SDL_Point r4p2 = { r4.x + r4.w, r4.y  };
+    points.push_back(r4p1);
+    points.push_back(r4p2);
+
+    SDL_Point r5p1 = { r5.x , r5.y + r5.h };
+    SDL_Point r5p2 = { r5.x + r4.w , r5.y + r5.h };
+    points.push_back(r5p1);
+    points.push_back(r5p2);
+
+    SDL_Point r6p1 = { r6.x , r6.y };
+    SDL_Point r6p2 = { r6.x ,  r6.y + r6.h};
+    points.push_back(r6p1);
+    points.push_back(r6p2);
 
     // returns all the points
     return points;
