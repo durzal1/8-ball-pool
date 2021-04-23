@@ -29,63 +29,63 @@ float stopBall = 3.2f;
 
 // constructor
 ball::ball(Pixel x, Pixel y, power p, ballType Balltype, float velx, float vely) {
-    this->x = x;
-    this->y = y;
-    this->velx = velx * p;
-    this->vely = vely * p;
-    this->initialPower = p;
-    this->BallType = Balltype;
-    this->innovation = innovation;
-    this->mass = Radius * 5.0f;
-    this->ax = 0;
-    this->ay = 0;
-    this->innovation = 0;
+	this->x = x;
+	this->y = y;
+	this->velx = velx * p;
+	this->vely = vely * p;
+	this->initialPower = p;
+	this->BallType = Balltype;
+	this->innovation = innovation;
+	this->mass = Radius * 5.0f;
+	this->ax = 0;
+	this->ay = 0;
+	this->innovation = 0;
 
-    // updates innovation
-    this->innovation = ++nextInnovation;
+	// updates innovation
+	this->innovation = ++nextInnovation;
 
-    // updates vector of balls
-    this->balls.push_back(*this);
+	// updates vector of balls
+	this->balls.push_back(*this);
 }
 
 //moving function
 void ball::move(std::vector<SDL_Rect> rects, int HEIGHT, goal Goal, std::vector<SDL_Point> points) {
-    // calculates friction
-    this->ax = -this->velx * friction;
-    this->ay = -this->vely * friction;
+
+	// calculates friction
+	this->ax = -this->velx * friction;
+	this->ay = -this->vely * friction;
+
+	// calculates vels
+	float timeDelta = 1.0f / FPS;
 
 
-    // calculates vels
-    float timeDelta = 1.0f / FPS;
+	velx += this->ax * timeDelta;
+	vely += this->ay * timeDelta;
 
 
-    velx += this->ax * timeDelta;
-    vely += this->ay * timeDelta;
+	// puts ball to a stop after slowing down certain amount
+	if (fabs(this->velx * this->velx + this->vely * this->vely) < stopBall) {
+		this->velx = 0, this->vely = 0;
+	}
 
 
-    // puts ball to a stop after slowing down certain amount
-    if (fabs(this->velx * this->velx + this->vely * this->vely) < stopBall) {
-        this->velx = 0, this->vely = 0;
-    }
+	// calculates x, y
+	this->x += this->velx * timeDelta;
+	this->y += this->vely * timeDelta;
 
 
-    // calculates x, y
-    this->x += this->velx * timeDelta;
-    this->y += this->vely * timeDelta;
+	// wall collision
+	collisionAllWalls(rects, HEIGHT, Goal, points);
 
-    
-    // wall collision
-    if (checkForCollisionWall(rects, HEIGHT, Goal, points)) collisionWall();
-
-    // ball collision
-    for (ball& b : balls) {
-        // makes sure it isnt detecting same ball
-        if (b.innovation != this->innovation) {
-            if (checkForCollisionBall(b)) {
-                collisionBall(b);
-            }
-        }
-    }
+	// ball collision
+	for (ball& b : balls) {
+		// makes sure it isnt detecting same ball
+		if (b.innovation != this->innovation) {
+			if (checkForCollisionBall(b)) {
+				collisionBall(b);
+			}
+		}
+	}
 
 
 }
@@ -93,221 +93,124 @@ void ball::move(std::vector<SDL_Rect> rects, int HEIGHT, goal Goal, std::vector<
 //function that will check if a collision has occurred with another ball
 bool ball::checkForCollisionBall(ball& ball_) {
 
-    return fabs(powf(this->x - ball_.x, 2) + powf(this->y - ball_.y, 2)) <= pow(Radius * 2, 2);
+	return fabs(powf(this->x - ball_.x, 2) + powf(this->y - ball_.y, 2)) <= pow(Radius * 2, 2);
 
 }
-//
-// function that will check if a collision has occurred with the wall
-bool ball::checkForCollisionWall(std::vector<SDL_Rect> rects, int WIDTH, goal Goal, std::vector<SDL_Point> points) {
-    FrameSinceLast ++;
-    if (innovation != 1){
-        return false; //todo REMOVE
-    }
-    /// checks with the primary boundary
+
+// function that will handle wall collision
+bool ball::collisionAllWalls(std::vector<SDL_Rect> rects, int WIDTH, goal Goal, std::vector<SDL_Point> points) {
 
 
-    for (SDL_Rect rect:rects){
+	/// checks with all walls and lines
+	for (int i = 0; i < points.size(); i++) {
+		// makes sure it is the first point of the line
+		if (i % 2 != 0) {
+			continue;
+		}
 
-        // left and right
-        if (rect.x == 0){
-            if (x - Radius<= rect.w + rect.x && y > rect.y && y < rect.y + rect.h){
-                count_left ++;
-
-                if (count_left == 1){
-                    ColWall = LEFT;
-                    WierdAngle = true;
-                    goLeft = false;
-                    return true;
-                }
-
-                if (goLeft){
-                    ColWall = LEFT;
-                    return true;
-                }
-            }
-
-        }
-        else if( rect.x == int(WIDTH - Goal.Radius * 1.5)){
-            if (  ( (x + Radius >= rect.x) && (x + Radius <= rect.w + rect.x)  ) && y > rect.y && y < rect.y + rect.h){
-                if (!WierdAngle){
-                    ColWall = RIGHT;
-                    WierdAngle = true;
-                    goRight = false;
-                    return true;
-                }
-                if (goRight){
-                    ColWall = RIGHT;
-                    return true;
-                }
-            }
-
-        }
-
-        // middle
-
-        // if its in the wall
-        else if( ( ( (x + Radius >= rect.x) && (x <= rect.w+ rect.x) ) || ( (x >= rect.x) && (x - Radius<= rect.w+ rect.x) )) &&  ( (y + Radius >= rect.y  &&  y +Radius <= rect.h+ rect.y) || (y - Radius <= rect.y  &&  y - Radius >= rect.h+ rect.y)  ) ){
-
-             if (!WierdAngle){
-                ColWall = DOWN;
-                WierdAngle = true;
-                goUpDown = false;
-                return true;
-            }
-            if (goUpDown){
-                 ColWall = DOWN;
-                 return true;
-            }
-        }
-        else if ((x >= rect.x) && x - Radius<= rect.w+ rect.x && (y - Radius >= rect.y  &&  y - Radius <= rect.h+ rect.y)){
-            if (!WierdAngle){
-                ColWall = DOWN;
-                WierdAngle = true;
-                return true;
-            }
-            if (goUpDown){
-                ColWall = DOWN;
-                return true;
-            }
-        }
+		// two points
+		SDL_Point p1 = points[i];
+		SDL_Point p2 = points[i + 1];
 
 
-    }
-    if (FrameSinceLast < 3){
-        return false;
-    }
-    /// checks with the secondary boundary
-    for (int i = 0; i < points.size(); i ++){
-        // makes sure it is the first point of the line
-        if (i % 2 != 0){
-            continue;
-        }
+		float line1x = p1.x - p2.x;
+		float line1y = p1.y - p2.y;
 
 
-        SDL_Point point1 = points[i];
-        SDL_Point point2 = points[i+1];
+		float line2x = x - p2.x;
+		float line2y = y - p2.y;
+
+		// length of line segment
+		float len = line1x * line1x + line1y * line1y;
+
+		// clamped value between 0 and 1
+		float d = std::fmax(0, fmin(len, line1x * line2x + line1y * line2y)) / len;
 
 
+		// closest x, y value on segment
+		float closeX = p2.x + d * line1x;
+		float closeY = p2.y + d * line1y;
 
-        // top left
-        if ( point2.x < x && x < point1.x && point2.y < y  && y< point1.y){
-            velx = -velx;
-            vely = -vely;
-            FrameSinceLast = 0;
-            return false;
-        }
-        else if (point1.x < x && x < point2.x && point1.y < y && y  < point2.y){
-            velx = -velx;
-            vely = -vely;
-            FrameSinceLast = 0;
-            return false;
-        }
+		// ditance between ball and closest x, y on segment
+		float dist = sqrtf((x - closeX) * (x - closeX) + (y - closeY) * (y - closeY));
 
-        // bottom left
-        else if ( point2.x < x && x < point1.x && point2.y > y  && y> point1.y){
-            velx = -velx;
-            vely = -vely;
-            FrameSinceLast = 0;
-            return false;
-        }
-        else if (point1.x < x && x < point2.x && point1.y > y && y > point2.y){
-            velx = -velx;
-            vely = -vely;
-            FrameSinceLast = 0;
-            return false;
-        }
-        //todo add goal collisions
-        // 2 main issues rn
-        // 1) the slanted collisions are only accurate 50% time where you would need to change the x and y
-        // the other 50% where you only need to change one arent accurate
-        // the only way to solve this is to make a function that can find which one it is
-        // 2) its possible that it might get stuck in the walls sometimes too
-
-        // top right
-        else if ( point1.x  > x  && x   > point2.x && point1.y < y   && y  < point2.y){
-            velx = -velx;
-            vely = -vely;
-            FrameSinceLast = 0;
-            return false;
-        }
-        else if (point1.x < x && x < point2.x && point1.y > y && y  > point2.y){
-            velx = -velx;
-            vely = -vely;
-            FrameSinceLast = 0;
-            return false;
-        }
-
-        // bottom right
-        else if ( point1.x  > x  && x   > point2.x && point1.y < y   && y  < point2.y){
-            velx = -velx;
-            vely = -vely;
-            FrameSinceLast = 0;
-            return false;
-        }
-        else if (point1.x < x && x < point2.x && point1.y > y && y  > point2.y){
-            velx = -velx;
-            vely = -vely;
-            FrameSinceLast = 0;
-            return false;
-        }
-
-        // mid top
-        else if ( point1.x < x && x - 7 < point2.x && point1.y > y  && y  > point2.y){
-            velx = -velx;
-            vely = -vely;
-            FrameSinceLast = 0;
-            return false;
-        }
-        else if (point1.x < x && x < point2.x && point1.y > y && y  > point2.y){
-            velx = -velx;
-            vely = -vely;
-            FrameSinceLast = 0;
-            return false;
-        }
+		// if they touch...
+		if (dist <= Radius) {
 
 
+			// displace so they do not get stuck
+			float displace = 1.0f * (dist - Radius - 1);
 
-    }
 
-    return false;
+			x -= displace * (x - closeX) / dist;
+			y -= displace * (y - closeY) / dist;
+
+			// distance between objects
+			float dist2 = sqrtf(powf(this->x - closeX, 2) + powf(this->y - closeY, 2));
+
+			// Normal
+			float nx = (closeX - this->x) / dist2;
+			float ny = (closeY- this->y) / dist2;
+
+			// Tangent
+			float tx = -ny;
+			float ty = nx;
+
+			// dot prod tan
+			float dpTan1 = this->velx * tx + this->vely * ty;
+			float dpTan2 = (-velx * tx) + (-vely * ty);
+
+			// dot prod norm
+			float dpNorm1 = this->velx * nx + this->vely * ny;
+			float dpNorm2 = (-velx * nx) + (-vely * ny);
+
+			// conservation of mass
+			float massWall = this->mass * 0.7f;
+			float m1 = (dpNorm1 * (this->mass - massWall) + 2.0f * (massWall) * dpNorm2) / (this->mass + (massWall));
+			float m2 = (dpNorm2 * (massWall - this->mass) + 2.0f * this->mass * dpNorm1) / (this->mass + (massWall));
+
+			// adds to velocities
+			this->velx = tx * dpTan1 + nx * m1;
+			this->vely = ty * dpTan1 + ny * m1;
+
+		}
+	}
+
+	return false;
 }
 
-// function that will happen if a collision occurred with a wall
-void ball::collisionWall() {
-    if (ColWall == LEFT || ColWall == RIGHT) velx = -velx;
-    else if (ColWall == UP || ColWall || DOWN) vely = -vely;
-}
+
 
 // function that will happen if a collision occurred with a ball
 void ball::collisionBall(ball& ball1) {
-    // distance between balls
-    float dist = sqrtf(powf(this->x - ball1.x, 2) + powf(this->y - ball1.y, 2));
+	// distance between balls
+	float dist = sqrtf(powf(this->x - ball1.x, 2) + powf(this->y - ball1.y, 2));
 
-    // Normal
-    float nx = (ball1.x - this->x) / dist;
-    float ny = (ball1.y - this->y) / dist;
+	// Normal
+	float nx = (ball1.x - this->x) / dist;
+	float ny = (ball1.y - this->y) / dist;
 
-    // Tangent
-    float tx = -ny;
-    float ty = nx;
+	// Tangent
+	float tx = -ny;
+	float ty = nx;
 
-    // dot prod tan
-    float dpTan1 = this->velx * tx + this->vely * ty;
-    float dpTan2 = ball1.velx * tx + ball1.vely * ty;
+	// dot prod tan
+	float dpTan1 = this->velx * tx + this->vely * ty;
+	float dpTan2 = ball1.velx * tx + ball1.vely * ty;
 
-    // dot prod norm
-    float dpNorm1 = this->velx * nx + this->vely * ny;
-    float dpNorm2 = ball1.velx * nx + ball1.vely * ny;
+	// dot prod norm
+	float dpNorm1 = this->velx * nx + this->vely * ny;
+	float dpNorm2 = ball1.velx * nx + ball1.vely * ny;
 
-    // conservation of mass
-    float m1 = (dpNorm1 * (this->mass - ball1.mass) + 2.0f * ball1.mass * dpNorm2) / (this->mass + ball1.mass);
-    float m2 = (dpNorm2 * (ball1.mass - this->mass) + 2.0f * this->mass * dpNorm1) / (this->mass + ball1.mass);
-    
-    // adds to velocities
-    this->velx = tx * dpTan1 + nx * m1;
-    this->vely = ty * dpTan1 + ny * m1;
-    ball1.velx = tx * dpTan2 + nx * m2;
-    ball1.vely = ty * dpTan2 + ny * m2;
+	// conservation of mass
+	float m1 = (dpNorm1 * (this->mass - ball1.mass) + 2.0f * ball1.mass * dpNorm2) / (this->mass + ball1.mass);
+	float m2 = (dpNorm2 * (ball1.mass - this->mass) + 2.0f * this->mass * dpNorm1) / (this->mass + ball1.mass);
+
+	// adds to velocities
+	this->velx = tx * dpTan1 + nx * m1;
+	this->vely = ty * dpTan1 + ny * m1;
+	ball1.velx = tx * dpTan2 + nx * m2;
+	ball1.vely = ty * dpTan2 + ny * m2;
 
 }
 
@@ -315,32 +218,32 @@ void ball::collisionBall(ball& ball1) {
 
 // returns point
 SDL_Point ball::getPixels() {
-    return SDL_Point({ (int)this->x, (int)this->y });
+	return SDL_Point({ (int)this->x, (int)this->y });
 }
 
 
 // returns color
 SDL_Color ball::getColor() {
-    SDL_Color color = {};
+	SDL_Color color = {};
 
 
 
-    switch (this->BallType)
-    {
-    case SOLID:
-        color = { 20, 39, 255 }; //  blue for now
-        break;
-    case BLACK:
-        color = { 0, 0, 0 };
-        break;
-    case STRIPE:
-        color = { 255, 165, 0 }; // orange for now
-        break;
-    case WHITE:
-        color = { 255, 255, 255 };
-    default:
-        break;
-    }
+	switch (this->BallType)
+	{
+	case SOLID:
+		color = { 20, 39, 255 }; //  blue for now
+		break;
+	case BLACK:
+		color = { 0, 0, 0 };
+		break;
+	case STRIPE:
+		color = { 255, 165, 0 }; // orange for now
+		break;
+	case WHITE:
+		color = { 255, 255, 255 };
+	default:
+		break;
+	}
 
-    return color;
+	return color;
 }
