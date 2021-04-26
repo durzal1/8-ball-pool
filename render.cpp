@@ -359,8 +359,8 @@ std::vector<SDL_Point> render::setBoundary2(SDL_Renderer* renderer, std::vector<
 
 
     // points on the side facing inwards on rectangles
-    SDL_Point r1p1 = { r1.x + r1.w + offset, r1.y };
-    SDL_Point r1p2 = { r1.x + offset, r1.y + r1.h };
+    SDL_Point r1p1 = { r1.x + r1.w, r1.y };
+    SDL_Point r1p2 = { r1.x + r1.w, r1.y + r1.h };
     points.push_back(r1p1);
     points.push_back(r1p2);
 

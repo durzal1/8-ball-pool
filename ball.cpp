@@ -230,17 +230,21 @@ SDL_Color ball::getColor() {
 
 	switch (this->BallType)
 	{
-	case SOLID:
+	    case WHITE:
+            color = { 255, 255, 255 };
+            break;
+	case BLUE:
 		color = { 20, 39, 255 }; //  blue for now
 		break;
 	case BLACK:
 		color = { 0, 0, 0 };
 		break;
-	case STRIPE:
+	case ORANGE:
 		color = { 255, 165, 0 }; // orange for now
 		break;
-	case WHITE:
-		color = { 255, 255, 255 };
+		case GREEN:
+        color = {0, 255, 0};
+        break;
 	default:
 		break;
 	}

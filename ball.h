@@ -28,18 +28,16 @@ private:
     // vector that stores the x and y of each pixel of the circumference
     std::vector<std::vector<Pixel>> circumference;
 
-    // identification number for the side balls
-    int innovation;
 
     // to not have duplicate innovations
     static int nextInnovation;
 
 public:
-
+    // identification number for the side balls
+    int innovation;
 
     // contains all balls as they are created
     static std::vector<std::reference_wrapper<ball>> balls;
-
 
     // input power
     power initialPower;
@@ -64,6 +62,8 @@ public:
     // frames since last wall collision
     int FrameSinceLast = 4;
 
+    // if the ball has made it into a goal
+    bool inGoal = false;
 
     // constructor
     ball(Pixel x, Pixel y, power p, ballType Balltype, float velx, float vely);
@@ -79,8 +79,6 @@ public:
 
     // if the ball has collided with another ball
     void collisionBall(ball& ball1);
-
-
 
     // returns x, y
     SDL_Point getPixels();

@@ -13,10 +13,11 @@ typedef int Degree;
 typedef float Dist;
 // if its solid or stripe or other
 enum ballType{
-    SOLID = -1,
+    ORANGE = -1,
     BLACK = 0,
-    STRIPE = 1,
+    BLUE = 1,
     WHITE = 2,
+    GREEN = 3,
 };
 // direction of the wall
 enum DIRECTION{

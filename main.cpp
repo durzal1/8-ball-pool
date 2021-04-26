@@ -1,12 +1,12 @@
 #include <iostream>
 #include <functional>
 // for zacky
-//#include "ball.cpp"
-//#include "render.cpp"
-
-// for kevin
-#include "ball.h"
-#include "render.h"
+#include "ball.cpp"
+#include "render.cpp"
+//
+//// for kevin
+//#include "ball.h"
+//#include "render.h"
 
 #include "goal.h"
 
@@ -20,6 +20,12 @@ int ball::nextInnovation = 0;
 // initializes vector of all balls
 std::vector<std::reference_wrapper<ball>> ball::balls = {};
 
+// current turn
+int turn = 0;
+
+// if the game is over
+bool gameOver = false;
+
 int main(int argc, char* argv[]) {
 
 	int posX = 150, posY = 130, width = 1600, height = 800;
@@ -28,11 +34,28 @@ int main(int argc, char* argv[]) {
 
 	render Rendermain = render();
 	
-	ball Ballmain = ball(300.0f, 370.0f, FIVE, SOLID, -180, -200);
-	ball Ball2 = ball(730.0f, 300.0f, THREE, SOLID, 270, 0);
-	ball Ball3 = ball(820.0f, 150.0f, FIVE, BLACK, 0, 85);
+	ball Ballmain = ball(400.0f, 400.0f, SIX, WHITE, -300, -280);
+	ball Ball2 = ball(1200.0f + Ballmain.Radius * 4, 400.0f , NONE, BLACK, 0, 0);
 
-	// creates the goals
+	// all orange balls
+	ball Ball4 = ball(1200.0f, 400.0f, NONE, ORANGE, 0, 0);
+	ball Ball5 = ball(1200.0f + Ball4.Radius * 2 , 400.0f + Ball4.Radius, NONE, ORANGE, 0, 0);
+	ball Ball6 = ball(1200.0f + Ball4.Radius * 8, 400.0f + Ball4.Radius * 4 , NONE, ORANGE, 0, 0);
+	ball Ball7 = ball(1200.0f + Ball4.Radius * 4, 400.0f - Ball4.Radius * 2 , NONE, ORANGE, 0, 0);
+	ball Ball8 = ball(1200.0f + Ball4.Radius * 6, 400.0f - Ball4.Radius * 3 , NONE, ORANGE, 0, 0);
+	ball Ball9 = ball(1200.0f + Ballmain.Radius * 8, 400.0f - Ball4.Radius * 2 , NONE, ORANGE, 0, 0);
+	ball Ball16 = ball(1200.0f + Ballmain.Radius * 6, 400.0f - Ball4.Radius , NONE, ORANGE, 0, 0);
+
+	// all blue balls
+    ball Ball10 = ball(1200.0f + Ball4.Radius * 4, 400.0f + Ball4.Radius * 2 , NONE, BLUE, 0, 0);
+    ball Ball11 = ball(1200.0f + Ball4.Radius * 6, 400.0f + Ball4.Radius * 3 , NONE, BLUE, 0, 0);
+    ball Ball12 = ball(1200.0f + Ball4.Radius * 2, 400.0f - Ball4.Radius , NONE, BLUE, 0, 0);
+    ball Ball13 = ball(1200.0f + Ball4.Radius * 8, 400.0f - Ball4.Radius * 4 , NONE, BLUE, 0, 0);
+    ball Ball14 = ball(1200.0f + Ballmain.Radius * 8, 400.0f , NONE, BLUE, 0, 0);
+    ball Ball15 = ball(1200.0f + Ballmain.Radius * 8, 400.0f + Ball4.Radius * 2 , NONE, BLUE, 0, 0);
+    ball Ball17 = ball(1200.0f + Ballmain.Radius * 6, 400.0f + Ball4.Radius , NONE, BLUE, 0, 0);
+
+    // creates the goals
 	goal Goal1 = goal(30, 30, 30);
 	goal Goal2 = goal(30, height - 30, 30);
 
@@ -90,6 +113,8 @@ int main(int argc, char* argv[]) {
 				break;
 			}
 		}
+        // adds one to turn
+        turn ++;
 
 		// sets bg to pink
 		SDL_SetRenderDrawColor(renderer, 255, 23, 255, 0);
@@ -102,12 +127,12 @@ int main(int argc, char* argv[]) {
 		std::vector<SDL_Rect> rects = Rendermain.setBoundary(renderer, width, height, Goal1);
 		std::vector<SDL_Point> points = Rendermain.setBoundary2(renderer, Goals, rects);
 
-		//for (SDL_Rect r : rects) std::cout << r.x << ' ' << r.y << ' ' << r.w << ' ' << r.h << '\n';
-		//return 0;
+		// if it should break out of the loop
+		bool end = false;
 
 		// moves every ball
-		for (int i = 0; i < ball::balls.size(); i++) {
-			ball &b = ball::balls[i];
+        for (int i = 0; i < ball::balls.size(); i++) {
+            ball &b = ball::balls[i];
 			b.move(rects, width, Goal1, points);
 
 			// draws each ball
@@ -117,16 +142,42 @@ int main(int argc, char* argv[]) {
 			for (goal& Goal : Goals) {
 				// if > half of ball cross over goal, counts as goal
 				if (fabs(powf(b.x - ((Goal.x + Goal.Radius) / 2), 2) + powf(b.y - (Goal.y + Goal.Radius), 2)) <= powf((b.Radius + Goal.Radius), 2)) {
+
+				    // if its the white ball that went in
+				    if (b.innovation == 1){
+				        // puts the ball in the center
+                        b.x = 800;
+                        b.y = 400;
+
+                        // sets the velocity to 0
+                        b.velx = 0;
+                        b.vely = 0;
+
+                        // adds one to the turn as a penalty
+                        turn ++;
+                        break;
+				    }
+				    // todo add the 7 balls going in if their of the right type and penalty for scoring the wrong type
+				    //   also if black ball goes into too early and if it goes in at the right time
+
+				    // erases the ball from the vector
 					ball::balls.erase(ball::balls.begin() + i);
+
 					// TODO: Add animation to make ball fade out
 					std::cout << "Goal!" << std::endl;
+
+					b.inGoal = true;
+
+					end = true;
+                    break;
 				}
-								// if ball is in the goal
-				//                if (dist <= 500) {
-				//                    SDL_Delay(0);
-				//                }
+
 			}
 
+			// if it should break out of the loop early
+			if (end){
+			    break;
+			}
 		}
 
 		for (goal& Goal : Goals) {
@@ -140,7 +191,7 @@ int main(int argc, char* argv[]) {
 		// sets framerate to 144 by delaying each frame if needed
 		Uint32 frametime = SDL_GetTicks() - framestart;
 		if (1000 / 144 > frametime) SDL_Delay(1000 / 144 - frametime);
-		// SDL_Delay(20);
+		 SDL_Delay(20);
 
 	}
 
