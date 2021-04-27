@@ -1,12 +1,12 @@
 #include <iostream>
 #include <functional>
 // for zacky
-#include "ball.cpp"
-#include "render.cpp"
+//#include "ball.cpp"
+//#include "render.cpp"
 //
-//// for kevin
-//#include "ball.h"
-//#include "render.h"
+// for kevin
+#include "ball.h"
+#include "render.h"
 
 #include "goal.h"
 
@@ -26,6 +26,9 @@ int turn = 0;
 // if the game is over
 bool gameOver = false;
 
+
+
+
 int main(int argc, char* argv[]) {
 
 	int posX = 150, posY = 130, width = 1600, height = 800;
@@ -33,29 +36,29 @@ int main(int argc, char* argv[]) {
 	// creates renderer, balls
 
 	render Rendermain = render();
-	
-	ball Ballmain = ball(400.0f, 400.0f, SIX, WHITE, -300, -280);
-	ball Ball2 = ball(1200.0f + Ballmain.Radius * 4, 400.0f , NONE, BLACK, 0, 0);
+
+	ball Ballmain = ball(420.0f, 400.0f, SIX, WHITE, -300.f, -280.f);
+	ball Ball2 = ball(1200.0f + Ballmain.Radius * 4, 400.0f, NONE, BLACK, 0, 0);
 
 	// all orange balls
 	ball Ball4 = ball(1200.0f, 400.0f, NONE, ORANGE, 0, 0);
-	ball Ball5 = ball(1200.0f + Ball4.Radius * 2 , 400.0f + Ball4.Radius, NONE, ORANGE, 0, 0);
-	ball Ball6 = ball(1200.0f + Ball4.Radius * 8, 400.0f + Ball4.Radius * 4 , NONE, ORANGE, 0, 0);
-	ball Ball7 = ball(1200.0f + Ball4.Radius * 4, 400.0f - Ball4.Radius * 2 , NONE, ORANGE, 0, 0);
-	ball Ball8 = ball(1200.0f + Ball4.Radius * 6, 400.0f - Ball4.Radius * 3 , NONE, ORANGE, 0, 0);
-	ball Ball9 = ball(1200.0f + Ballmain.Radius * 8, 400.0f - Ball4.Radius * 2 , NONE, ORANGE, 0, 0);
-	ball Ball16 = ball(1200.0f + Ballmain.Radius * 6, 400.0f - Ball4.Radius , NONE, ORANGE, 0, 0);
+	ball Ball5 = ball(1200.0f + Ball4.Radius * 2, 400.0f + Ball4.Radius, NONE, ORANGE, 0, 0);
+	ball Ball6 = ball(1200.0f + Ball4.Radius * 8, 400.0f + Ball4.Radius * 4, NONE, ORANGE, 0, 0);
+	ball Ball7 = ball(1200.0f + Ball4.Radius * 4, 400.0f - Ball4.Radius * 2, NONE, ORANGE, 0, 0);
+	ball Ball8 = ball(1200.0f + Ball4.Radius * 6, 400.0f - Ball4.Radius * 3, NONE, ORANGE, 0, 0);
+	ball Ball9 = ball(1200.0f + Ballmain.Radius * 8, 400.0f - Ball4.Radius * 2, NONE, ORANGE, 0, 0);
+	ball Ball16 = ball(1200.0f + Ballmain.Radius * 6, 400.0f - Ball4.Radius, NONE, ORANGE, 0, 0);
 
 	// all blue balls
-    ball Ball10 = ball(1200.0f + Ball4.Radius * 4, 400.0f + Ball4.Radius * 2 , NONE, BLUE, 0, 0);
-    ball Ball11 = ball(1200.0f + Ball4.Radius * 6, 400.0f + Ball4.Radius * 3 , NONE, BLUE, 0, 0);
-    ball Ball12 = ball(1200.0f + Ball4.Radius * 2, 400.0f - Ball4.Radius , NONE, BLUE, 0, 0);
-    ball Ball13 = ball(1200.0f + Ball4.Radius * 8, 400.0f - Ball4.Radius * 4 , NONE, BLUE, 0, 0);
-    ball Ball14 = ball(1200.0f + Ballmain.Radius * 8, 400.0f , NONE, BLUE, 0, 0);
-    ball Ball15 = ball(1200.0f + Ballmain.Radius * 8, 400.0f + Ball4.Radius * 2 , NONE, BLUE, 0, 0);
-    ball Ball17 = ball(1200.0f + Ballmain.Radius * 6, 400.0f + Ball4.Radius , NONE, BLUE, 0, 0);
+	ball Ball10 = ball(1200.0f + Ball4.Radius * 4, 400.0f + Ball4.Radius * 2, NONE, BLUE, 0, 0);
+	ball Ball11 = ball(1200.0f + Ball4.Radius * 6, 400.0f + Ball4.Radius * 3, NONE, BLUE, 0, 0);
+	ball Ball12 = ball(1200.0f + Ball4.Radius * 2, 400.0f - Ball4.Radius, NONE, BLUE, 0, 0);
+	ball Ball13 = ball(1200.0f + Ball4.Radius * 8, 400.0f - Ball4.Radius * 4, NONE, BLUE, 0, 0);
+	ball Ball14 = ball(1200.0f + Ballmain.Radius * 8, 400.0f, NONE, BLUE, 0, 0);
+	ball Ball15 = ball(1200.0f + Ballmain.Radius * 8, 400.0f + Ball4.Radius * 2, NONE, BLUE, 0, 0);
+	ball Ball17 = ball(1200.0f + Ballmain.Radius * 6, 400.0f + Ball4.Radius, NONE, BLUE, 0, 0);
 
-    // creates the goals
+	// creates the goals
 	goal Goal1 = goal(30, 30, 30);
 	goal Goal2 = goal(30, height - 30, 30);
 
@@ -113,8 +116,8 @@ int main(int argc, char* argv[]) {
 				break;
 			}
 		}
-        // adds one to turn
-        turn ++;
+		// adds one to turn
+		turn++;
 
 		// sets bg to pink
 		SDL_SetRenderDrawColor(renderer, 255, 23, 255, 0);
@@ -131,8 +134,8 @@ int main(int argc, char* argv[]) {
 		bool end = false;
 
 		// moves every ball
-        for (int i = 0; i < ball::balls.size(); i++) {
-            ball &b = ball::balls[i];
+		for (int i = 0; i < ball::balls.size(); i++) {
+			ball& b = ball::balls[i];
 			b.move(rects, width, Goal1, points);
 
 			// draws each ball
@@ -141,26 +144,26 @@ int main(int argc, char* argv[]) {
 			//goes through each goal and checks if a ball is in it
 			for (goal& Goal : Goals) {
 				// if > half of ball cross over goal, counts as goal
-				if (fabs(powf(b.x - ((Goal.x + Goal.Radius) / 2), 2) + powf(b.y - (Goal.y + Goal.Radius), 2)) <= powf((b.Radius + Goal.Radius), 2)) {
+				if (Goal.isGoal(b.x, b.y, b.Radius)) {
 
-				    // if its the white ball that went in
-				    if (b.innovation == 1){
-				        // puts the ball in the center
-                        b.x = 800;
-                        b.y = 400;
+					// if its the white ball that went in
+					if (b.innovation == 1) {
+						// puts the ball in the center
+						b.x = 800;
+						b.y = 400;
 
-                        // sets the velocity to 0
-                        b.velx = 0;
-                        b.vely = 0;
+						// sets the velocity to 0
+						b.velx = 0;
+						b.vely = 0;
 
-                        // adds one to the turn as a penalty
-                        turn ++;
-                        break;
-				    }
-				    // todo add the 7 balls going in if their of the right type and penalty for scoring the wrong type
-				    //   also if black ball goes into too early and if it goes in at the right time
+						// adds one to the turn as a penalty
+						turn++;
+						break;
+					}
+					// todo add the 7 balls going in if their of the right type and penalty for scoring the wrong type
+					//   also if black ball goes into too early and if it goes in at the right time
 
-				    // erases the ball from the vector
+					// erases the ball from the vector
 					ball::balls.erase(ball::balls.begin() + i);
 
 					// TODO: Add animation to make ball fade out
@@ -169,14 +172,14 @@ int main(int argc, char* argv[]) {
 					b.inGoal = true;
 
 					end = true;
-                    break;
+					break;
 				}
 
 			}
 
 			// if it should break out of the loop early
-			if (end){
-			    break;
+			if (end) {
+				break;
 			}
 		}
 
@@ -191,7 +194,7 @@ int main(int argc, char* argv[]) {
 		// sets framerate to 144 by delaying each frame if needed
 		Uint32 frametime = SDL_GetTicks() - framestart;
 		if (1000 / 144 > frametime) SDL_Delay(1000 / 144 - frametime);
-		 SDL_Delay(20);
+		// SDL_Delay(200);
 
 	}
 
