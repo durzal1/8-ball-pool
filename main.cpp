@@ -37,7 +37,9 @@ int main(int argc, char* argv[]) {
 
 	render Rendermain = render();
 
-	ball Ballmain = ball(420.0f, 400.0f, SIX, WHITE, -300.f, -280.f);
+
+	// TODO: fix balls when glitching in each other
+	ball Ballmain = ball(420.0f, 400.0f, SIX, WHITE, 620.f, -280.f);
 	ball Ball2 = ball(1200.0f + Ballmain.Radius * 4, 400.0f, NONE, BLACK, 0, 0);
 
 	// all orange balls
