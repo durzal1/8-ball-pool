@@ -22,9 +22,6 @@ private:
     // direction the ball collided with the wall
     DIRECTION ColWall = NONE1;
 
-    // if its solid or stripe or black
-    ballType BallType;
-
     // vector that stores the x and y of each pixel of the circumference
     std::vector<std::vector<Pixel>> circumference;
 
@@ -33,6 +30,9 @@ private:
     static int nextInnovation;
 
 public:
+    // if its solid or stripe or black
+    ballType BallType;
+
     // identification number for the side balls
     int innovation;
 
@@ -64,6 +64,7 @@ public:
 
     // if the ball has made it into a goal
     bool inGoal = false;
+
 
     // constructor
     ball(Pixel x, Pixel y, power p, ballType Balltype, float velx, float vely);

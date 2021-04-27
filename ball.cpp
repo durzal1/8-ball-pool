@@ -51,31 +51,37 @@ ball::ball(Pixel x, Pixel y, power p, ballType Balltype, float velx, float vely)
 //moving function
 void ball::move(std::vector<SDL_Rect> rects, int HEIGHT, goal Goal, std::vector<SDL_Point> points) {
 
-	// calculates friction
-	this->ax = -this->velx * friction;
-	this->ay = -this->vely * friction;
+    // if the ball's velocity is 0 it wont go through this loop
+    if (velx != 0 || vely != 0){
+        // calculates friction
+        this->ax = -this->velx * friction;
+        this->ay = -this->vely * friction;
 
-	// calculates vels
-	float timeDelta = 1.0f / FPS;
-
-
-	velx += this->ax * timeDelta;
-	vely += this->ay * timeDelta;
+        // calculates vels
+        float timeDelta = 1.0f / FPS;
 
 
-	// puts ball to a stop after slowing down certain amount
-	if (fabs(this->velx * this->velx + this->vely * this->vely) < stopBall) {
-		this->velx = 0, this->vely = 0;
-	}
+        velx += this->ax * timeDelta;
+        vely += this->ay * timeDelta;
 
 
-	// calculates x, y
-	this->x += this->velx * timeDelta;
-	this->y += this->vely * timeDelta;
+        // puts ball to a stop after slowing down certain amount
+        float speed = fabs(this->velx * this->velx + this->vely * this->vely);
+        if ( speed < stopBall) {
+            this->velx = 0, this->vely = 0;
+        }
 
 
-	// wall collision
-	collisionAllWalls(rects, HEIGHT, Goal, points);
+        // calculates x, y
+        this->x += this->velx * timeDelta;
+        this->y += this->vely * timeDelta;
+
+
+        // wall collision
+        collisionAllWalls(rects, HEIGHT, Goal, points);
+
+    }
+
 
 	// ball collision
 	for (ball& b : balls) {
