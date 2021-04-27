@@ -7,8 +7,9 @@
 
 #include "types_.h"
 #include <SDL2/SDL.h>
+#include <math.h>
 
-class goal{
+class goal {
 public:
     // x and y coords
     Pixel x;
@@ -23,7 +24,8 @@ public:
     // returns point
     SDL_Point getPixels();
 
-
+    // checks if middle point in goal touches ball, forcing ball to be at least half in goal
+    bool isGoal(Pixel bx, Pixel by, int r);
 
 
 
