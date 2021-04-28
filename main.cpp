@@ -13,7 +13,7 @@
 //#include "render.h"
 
 #include "goal.h"
-
+#include "vector2f.h"
 #include <SDL2/SDL.h>
 
 
@@ -56,7 +56,7 @@ int main(int argc, char* argv[]) {
 
 
 	// TODO: fix balls when glitching in each other
-	ball Ballmain = ball(420.0f, 400.0f, SIX, WHITE, 620.f, -280.f);
+	ball Ballmain = ball(400.0f, 400.0f, SIX, WHITE, 620.f, -280.f);
 	ball Ball2 = ball(1200.0f + Ballmain.Radius * 4, 400.0f, NONE, BLACK, 0, 0);
 
 	// all orange balls
@@ -101,10 +101,9 @@ int main(int argc, char* argv[]) {
 
 
     //// sets the new power and velocity
+    //// gets the inputs
 
-    /// gets the inputs
-
-    // finds the closest ball
+    /// finds the closest ball
 
     // vector of distances
     std::vector<float> distances;
@@ -120,18 +119,73 @@ int main(int argc, char* argv[]) {
         // adds the dist to distances vector
         distances.push_back(dist);
     }
+
+
     // finds the lowest distance
-    auto distMin = *min_element(distances.begin(), distances.end());
+    auto distMin = (*min_element(distances.begin(), distances.end()));
 
     // gets the index
     auto it = std::find(distances.begin(), distances.end(), distMin);
     int index = it- distances.begin();
 
     // sets the closet ball
-    ball closestBall = Ballmain.balls[index];
+    ball closestBall = Ballmain.balls[index + 1];
 
-    // distance optamized to work with neat //todo do this
-    double distMinOpt = pow(0.01,distMin);
+    // distance optamized to work with neat
+    double distMinOpt = (distMin / 10) / 178;
+    double distMinOpt2 = pow(0.9, distMin / 10);
+
+
+
+    // finds the angle between the white ball and closest ball
+
+    float delta_x = (closestBall.x) - Ballmain.x;
+    float delta_y =(closestBall.y) - Ballmain.x;
+
+    // angle in radians
+    double thetaRadiansBall = atan2(delta_y, delta_x);
+
+
+    /// finds the closest goal to closest ball
+
+    // vector of distances
+    std::vector<float> distancesGoals;
+
+    for (goal g:Goals){
+        // distance formula
+        double dist = sqrt( pow((g.x - closestBall.x), 2) + pow((g.y - closestBall.y), 2) );
+
+        // adds the dist to distances vector
+        distancesGoals.push_back(dist);
+    }
+
+    // finds the lowest distance
+    auto distMinGoal = (*min_element(distancesGoals.begin(), distancesGoals.end()));
+
+    // gets the index
+    auto it1 = std::find(distancesGoals.begin(), distancesGoals.end(), distMinGoal);
+    int index1 = it1- distancesGoals.begin();
+
+    // sets the closet ball
+    goal closestGoal = Goals[index1];
+
+    // distance optamized to work with neat
+    double distMinOptGoal = (distMinGoal / 10) / 178;
+    double distMinOpt2Goal = pow(0.9, distMinGoal / 10);
+
+
+    // angle between closest ball and its closest goal
+
+    float delta_x2 = (closestGoal.x) - closestBall.x;
+    float delta_y2 =(closestGoal.y) - closestBall.x;
+
+    // angle in radians
+    double thetaRadiansGoal = atan2(delta_y2, delta_x2);
+
+
+    // vector of all inputs
+    std::vector<double> inputs {distMinOpt2, thetaRadiansBall, distMinOpt2Goal, thetaRadiansGoal};
+
     std::cout << "F";
 
 	// initializes SDL
