@@ -88,6 +88,12 @@ void ball::move(std::vector<SDL_Rect> rects, int HEIGHT, goal Goal, std::vector<
 		// makes sure it isnt detecting same ball
 		if (b.innovation != this->innovation) {
 			if (checkForCollisionBall(b)) {
+			    if (b.BallType == WHITE){
+                    int f = pow(Radius * 2, 2) ;
+                    int l = fabs(powf(this->x - b.x, 2) + powf(this->y - b.y, 2));
+			        std::cout << "F";
+			    }
+
 				collisionBall(b);
 			}
 		}
@@ -98,9 +104,18 @@ void ball::move(std::vector<SDL_Rect> rects, int HEIGHT, goal Goal, std::vector<
 
 //function that will check if a collision has occurred with another ball
 bool ball::checkForCollisionBall(ball& ball_) {
+    int f = pow(Radius * 2, 2) ;
+    int l = fabs(powf(this->x - ball_.x, 2) + powf(this->y - ball_.y, 2));
 
-	return fabs(powf(this->x - ball_.x, 2) + powf(this->y - ball_.y, 2)) <= pow(Radius * 2, 2);
-
+    // balls are in each other
+    if (l <= 750){
+        // todo figure out how to get it unstuck
+    }
+    // if its just a regular collision
+    else if (l <= f){
+        return true;
+    }
+    return false;
 }
 
 // function that will handle wall collision

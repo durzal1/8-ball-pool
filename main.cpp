@@ -56,7 +56,7 @@ int main(int argc, char* argv[]) {
 
 
 	// TODO: fix balls when glitching in each other
-	ball Ballmain = ball(400.0f, 400.0f, SIX, WHITE, 620.f, -280.f);
+	ball Ballmain = ball(400.0f, 400.0f, SIX, WHITE, 690.f, -280.f);
 	ball Ball2 = ball(1200.0f + Ballmain.Radius * 4, 400.0f, NONE, BLACK, 0, 0);
 
 	// all orange balls
@@ -364,39 +364,7 @@ int main(int argc, char* argv[]) {
                 // resets every ball
                 b.inGoal = false;
             }
-            //// sets the new power and velocity
 
-            /// gets the inputs
-
-            // finds the closest ball
-
-            // vector of distances
-            std::vector<float> distances;
-
-            // loops through each ball and finds the distance between it and white ball
-            for (ball &b:ball::balls){
-                // if its the white ball it goes next
-                if (b.innovation == 1) continue;
-
-                // distance formula
-                double dist = sqrt( pow((b.x - Ballmain.x), 2) + pow((b.y - Ballmain.y), 2) );
-
-                // adds the dist to distances vector
-                distances.push_back(dist);
-            }
-            // finds the lowest distance
-            auto distMin = *min_element(distances.begin(), distances.end());
-
-            // gets the index
-            auto it = std::find(distances.begin(), distances.end(), distMin);
-            int index = it- distances.begin();
-
-            // sets the closet ball
-            ball closestBall = Ballmain.balls[index];
-
-            // distance optamized to work with neat
-            double distMinOpt = pow(distMin, 0.1);
-            std::cout << "F";
         }
 		// presents screen
 		SDL_RenderPresent(renderer);
