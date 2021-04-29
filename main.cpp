@@ -15,7 +15,7 @@
 #include "goal.h"
 #include "vector2f.h"
 #include <SDL2/SDL.h>
-
+#include "GetOutputs.h"
 
 // initializes innovation
 int ball::nextInnovation = 0;
@@ -55,8 +55,7 @@ int main(int argc, char* argv[]) {
 	render Rendermain = render();
 
 
-	// TODO: fix balls when glitching in each other
-	ball Ballmain = ball(400.0f, 400.0f, SIX, WHITE, 690.f, -280.f);
+	ball Ballmain = ball(400.0f, 400.0f, SIX, WHITE, 690.f, -30.f);
 	ball Ball2 = ball(1200.0f + Ballmain.Radius * 4, 400.0f, NONE, BLACK, 0, 0);
 
 	// all orange balls
@@ -101,95 +100,17 @@ int main(int argc, char* argv[]) {
 
 
     //// sets the new power and velocity
-    //// gets the inputs
 
-    /// finds the closest ball
-
-    // vector of distances
-    std::vector<float> distances;
-
-    // loops through each ball and finds the distance between it and white ball
-    for (ball &b:ball::balls){
-        // if its the white ball it goes next
-        if (b.innovation == 1) continue;
-
-        // distance formula
-        double dist = sqrt( pow((b.x - Ballmain.x), 2) + pow((b.y - Ballmain.y), 2) );
-
-        // adds the dist to distances vector
-        distances.push_back(dist);
-    }
-
-
-    // finds the lowest distance
-    auto distMin = (*min_element(distances.begin(), distances.end()));
-
-    // gets the index
-    auto it = std::find(distances.begin(), distances.end(), distMin);
-    int index = it- distances.begin();
-
-    // sets the closet ball
-    ball closestBall = Ballmain.balls[index + 1];
-
-    // distance optamized to work with neat
-    double distMinOpt = (distMin / 10) / 178;
-    double distMinOpt2 = pow(0.9, distMin / 10);
+    // gets outputs
+    std::vector<double> outputs = geOutputs(Ballmain, Goals);
 
 
 
-    // finds the angle between the white ball and closest ball
-
-    float delta_x = (closestBall.x) - Ballmain.x;
-    float delta_y =(closestBall.y) - Ballmain.x;
-
-    // angle in radians
-    double thetaRadiansBall = atan2(delta_y, delta_x);
 
 
-    /// finds the closest goal to closest ball
 
-    // vector of distances
-    std::vector<float> distancesGoals;
-
-    for (goal g:Goals){
-        // distance formula
-        double dist = sqrt( pow((g.x - closestBall.x), 2) + pow((g.y - closestBall.y), 2) );
-
-        // adds the dist to distances vector
-        distancesGoals.push_back(dist);
-    }
-
-    // finds the lowest distance
-    auto distMinGoal = (*min_element(distancesGoals.begin(), distancesGoals.end()));
-
-    // gets the index
-    auto it1 = std::find(distancesGoals.begin(), distancesGoals.end(), distMinGoal);
-    int index1 = it1- distancesGoals.begin();
-
-    // sets the closet ball
-    goal closestGoal = Goals[index1];
-
-    // distance optamized to work with neat
-    double distMinOptGoal = (distMinGoal / 10) / 178;
-    double distMinOpt2Goal = pow(0.9, distMinGoal / 10);
-
-
-    // angle between closest ball and its closest goal
-
-    float delta_x2 = (closestGoal.x) - closestBall.x;
-    float delta_y2 =(closestGoal.y) - closestBall.x;
-
-    // angle in radians
-    double thetaRadiansGoal = atan2(delta_y2, delta_x2);
-
-
-    // vector of all inputs
-    std::vector<double> inputs {distMinOpt2, thetaRadiansBall, distMinOpt2Goal, thetaRadiansGoal};
-
-    std::cout << "F";
 
 	// initializes SDL
-
 
 	SDL_Window* win = NULL;
 	SDL_Renderer* renderer = NULL;
@@ -245,6 +166,7 @@ int main(int argc, char* argv[]) {
 
             // draws each ball
             Rendermain.drawCircle(renderer, b, b.Radius, true);
+
 			//goes through each goal and checks if a ball is in it
 			for (goal& Goal : Goals) {
 				// if > half of ball cross over goal, counts as goal
@@ -335,11 +257,23 @@ int main(int argc, char* argv[]) {
                 }
             }
 
+
             // if one of them is still moving it will make allStopped false
             if (b.velx != 0 || b.vely != 0){
                 allStopped = false;
             }
+
+            // if one of the balls have come to a complete stop
+            if (b.velx == 0 && b.vely == 0 && b.hadCollision ){
+                // checks for overlapping
+                for (ball &b_ :b.balls){
+                    b_.fixOverlapping();
+                }
+
+            }
         }
+
+
         // if all of the balls have stopped
         if (allStopped){
             // adds one to turn
@@ -364,6 +298,22 @@ int main(int argc, char* argv[]) {
                 // resets every ball
                 b.inGoal = false;
             }
+
+            /// fitness function
+
+            // sets fit to 10 to make sure fitness doesnt go negative
+            double fitness = 10;
+
+            // decreases 4 if black ball is scored too early
+            if (gameOver && !WIN){
+                fitness -= 4;
+            }
+
+            // decreases 1 per wrong ball scored
+            fitness -= incorrectScored.size();
+
+            // adds 2 per correct ball scored
+            fitness += correctScored.size();
 
         }
 		// presents screen

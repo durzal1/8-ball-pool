@@ -12,7 +12,7 @@
 
 
 class ball {
-    //
+
 
 
 private:
@@ -65,6 +65,8 @@ public:
     // if the ball has made it into a goal
     bool inGoal = false;
 
+    // if the ball had a collision at some point
+    bool hadCollision = false;
 
     // constructor
     ball(Pixel x, Pixel y, power p, ballType Balltype, float velx, float vely);
@@ -80,6 +82,9 @@ public:
 
     // if the ball has collided with another ball
     void collisionBall(ball& ball1);
+
+    // fixes overlapping
+    void fixOverlapping();
 
     // returns x, y
     SDL_Point getPixels();

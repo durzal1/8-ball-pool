@@ -53,6 +53,16 @@ void ball::move(std::vector<SDL_Rect> rects, int HEIGHT, goal Goal, std::vector<
 
     // if the ball's velocity is 0 it wont go through this loop
     if (velx != 0 || vely != 0){
+        // ball collision
+        for (ball& b : balls) {
+            // makes sure it isnt detecting same ball
+            if (b.innovation != this->innovation) {
+                if (checkForCollisionBall(b)) {
+                    collisionBall(b);
+                }
+            }
+        }
+
         // calculates friction
         this->ax = -this->velx * friction;
         this->ay = -this->vely * friction;
@@ -80,42 +90,62 @@ void ball::move(std::vector<SDL_Rect> rects, int HEIGHT, goal Goal, std::vector<
         // wall collision
         collisionAllWalls(rects, HEIGHT, Goal, points);
 
+        // checks if its velocity is not 0
+        if (velx != 0 && vely !=0){
+            hadCollision = true;
+        }
     }
 
 
-	// ball collision
-	for (ball& b : balls) {
-		// makes sure it isnt detecting same ball
-		if (b.innovation != this->innovation) {
-			if (checkForCollisionBall(b)) {
-			    if (b.BallType == WHITE){
-                    int f = pow(Radius * 2, 2) ;
-                    int l = fabs(powf(this->x - b.x, 2) + powf(this->y - b.y, 2));
-			        std::cout << "F";
-			    }
 
-				collisionBall(b);
-			}
-		}
-	}
 
 
 }
+// function to check if there are any balls that remain overlapping and fix them
+void ball::fixOverlapping(){
+    // goes through every ball
+    for (ball& b : balls) {
+        // makes sure it isnt detecting same ball
+        if (b.innovation != this->innovation) {
+            int l = fabs(powf(this->x - b.x, 2) + powf(this->y - b.y, 2));
+            // balls are in each other
+            if (l <= 1550){
+                // distance between balls
+                float dist = sqrtf(powf(this->x - b.x, 2) + powf(this->y - b.y, 2));
 
+                // displace so they do not get stuck
+                float displace = 1.0f * (dist - Radius - 1);
+
+                x -= displace * ( b.x - x ) / dist;
+                y -= displace * (b.y - y) / dist;
+            }
+        }
+    }
+}
 //function that will check if a collision has occurred with another ball
 bool ball::checkForCollisionBall(ball& ball_) {
     int f = pow(Radius * 2, 2) ;
     int l = fabs(powf(this->x - ball_.x, 2) + powf(this->y - ball_.y, 2));
 
     // balls are in each other
-    if (l <= 750){
-        // todo figure out how to get it unstuck
+    if (l <= 800){
+        // distance between balls
+        float dist = sqrtf(powf(this->x - ball_.x, 2) + powf(this->y - ball_.y, 2));
+
+        // displace so they do not get stuck
+        float displace = 1.0f * (dist - Radius - 1);
+
+        int x_ =  displace * ( ball_.x - x ) / dist;
+        int y_ = displace * (ball_.y - y) / dist;
+        x -= displace * ( ball_.x - x ) / dist;
+        y -= displace * (ball_.y - y) / dist;
     }
     // if its just a regular collision
     else if (l <= f){
         return true;
     }
     return false;
+
 }
 
 // function that will handle wall collision
@@ -204,6 +234,7 @@ bool ball::collisionAllWalls(std::vector<SDL_Rect> rects, int WIDTH, goal Goal, 
 
 // function that will happen if a collision occurred with a ball
 void ball::collisionBall(ball& ball1) {
+
 	// distance between balls
 	float dist = sqrtf(powf(this->x - ball1.x, 2) + powf(this->y - ball1.y, 2));
 
@@ -232,6 +263,9 @@ void ball::collisionBall(ball& ball1) {
 	this->vely = ty * dpTan1 + ny * m1;
 	ball1.velx = tx * dpTan2 + nx * m2;
 	ball1.vely = ty * dpTan2 + ny * m2;
+
+
+
 
 }
 
