@@ -252,8 +252,12 @@ std::vector<SDL_Point> render::setBoundary2(SDL_Renderer* renderer, std::vector<
 //    SDL_SetRenderDrawColor(renderer, 100, 203, 255, 255);
 
     /// creates the points
-    SDL_RenderDrawLine(renderer, 615, 186, 800, 25);
-    SDL_RenderDrawLine(renderer, 585, 213, 0, 0);
+    SDL_RenderDrawLine(renderer, xCord, yCord, 0, 0);
+    SDL_RenderDrawLine(renderer, xCord2, yCord2, 0, 0);
+
+    SDL_RenderDrawLine(renderer, xCord_, yCord_, 0, 0);
+    SDL_RenderDrawLine(renderer, xCord2_, yCord2_, 0, 0);
+
     // top left
     SDL_Point point1 = { r1.w, r1.y };
     SDL_Point point1_ = { r1.w / 5, r1.w };

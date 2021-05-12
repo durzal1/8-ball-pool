@@ -93,7 +93,7 @@ double pool_main(Genome &genome) {
 
     // all orange balls
     ball Ball4 = ball(200.0f, 200.0f, NONE, ORANGE, 0, 0);
-    ball Ball5 = ball(600.0f , 200.0f, NONE, ORANGE, 0, 0);
+    ball Ball5 = ball(800.0f , 450.0f, NONE, ORANGE, 0, 0);
     ball Ball6 = ball(1000.0f , 200.0f, NONE, ORANGE, 0, 0);
     ball Ball7 = ball(1400.0f , 200.0f , NONE, ORANGE, 0, 0);
     ball Ball8 = ball(200.0f , 600.0f , NONE, ORANGE, 0, 0);

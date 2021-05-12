@@ -29,7 +29,11 @@ private:
     Pixel lastX;
     Pixel lastY;
 
+
+
 public:
+
+
     // to not have duplicate innovations
     static int nextInnovation;
 

@@ -38,6 +38,9 @@ int main(int argc, char* argv[]) {
     // current turn
     int turn = 0;
 
+    // for testing
+    bool yes = false;
+
     // if there is an infinite loop
     bool infiniteLoop = false;
 
@@ -87,17 +90,27 @@ int main(int argc, char* argv[]) {
     render Rendermain = render();
 
 
-    ball Ballmain = ball(800.0f, 400.0f, THREE, WHITE, 690.f, 30.f);
-    ball Ball2 = ball(1400, 600.0f, NONE, ORANGE, 0, 0);
+    ball Ballmain = ball(400.0f, 400.0f, THREE, WHITE, 0.f, 0.f);
+    ball Ball2 = ball(1200.0f + Ballmain.Radius * 4, 400.0f, NONE, BLACK, 0, 0);
 
     // all orange balls
-    ball Ball4 = ball(200.0f, 200.0f, NONE, ORANGE, 0, 0);
-    ball Ball5 = ball(600.0f , 200.0f, NONE, ORANGE, 0, 0);
-    ball Ball6 = ball(1000.0f , 200.0f, NONE, ORANGE, 0, 0);
-    ball Ball7 = ball(1400.0f , 200.0f , NONE, ORANGE, 0, 0);
-    ball Ball8 = ball(200.0f , 600.0f , NONE, ORANGE, 0, 0);
-    ball Ball9 = ball(600.0f , 600.0f, NONE, ORANGE, 0, 0);
-    ball Ball16 = ball(1000.0f, 600.0f , NONE, ORANGE, 0, 0);
+    ball Ball4 = ball(1200.0f, 400.0f, NONE, ORANGE, 0, 0);
+    ball Ball5 = ball(1200.0f + Ball4.Radius * 2, 400.0f + Ball4.Radius, NONE, ORANGE, 0, 0);
+    ball Ball6 = ball(1200.0f + Ball4.Radius * 8, 400.0f + Ball4.Radius * 4, NONE, ORANGE, 0, 0);
+    ball Ball7 = ball(1200.0f + Ball4.Radius * 4, 400.0f - Ball4.Radius * 2, NONE, ORANGE, 0, 0);
+    ball Ball8 = ball(1200.0f + Ball4.Radius * 6, 400.0f - Ball4.Radius * 3, NONE, ORANGE, 0, 0);
+    ball Ball9 = ball(1200.0f + Ballmain.Radius * 8, 400.0f - Ball4.Radius * 2, NONE, ORANGE, 0, 0);
+    ball Ball16 = ball(1200.0f + Ballmain.Radius * 6, 400.0f - Ball4.Radius, NONE, ORANGE, 0, 0);
+
+    // all blue balls
+    ball Ball10 = ball(1200.0f + Ball4.Radius * 4, 400.0f + Ball4.Radius * 2, NONE, ORANGE, 0, 0);
+    ball Ball11 = ball(1200.0f + Ball4.Radius * 6, 400.0f + Ball4.Radius * 3, NONE, ORANGE, 0, 0);
+    ball Ball12 = ball(1200.0f + Ball4.Radius * 2, 400.0f - Ball4.Radius, NONE, ORANGE, 0, 0);
+    ball Ball13 = ball(1200.0f + Ball4.Radius * 8, 400.0f - Ball4.Radius * 4, NONE, ORANGE, 0, 0);
+    ball Ball14 = ball(1200.0f + Ballmain.Radius * 8, 400.0f, NONE, ORANGE, 0, 0);
+    ball Ball15 = ball(1200.0f + Ballmain.Radius * 8, 400.0f + Ball4.Radius * 2, NONE, ORANGE, 0, 0);
+    ball Ball17 = ball(1200.0f + Ballmain.Radius * 6, 400.0f + Ball4.Radius, NONE, ORANGE, 0, 0);
+
 
 
     // creates the goals
@@ -125,8 +138,6 @@ int main(int argc, char* argv[]) {
 
     //// sets the new power and velocity
 
-    // sets outputs (updated to set and not just give)
-    getOutputs(Ballmain, Goals, turn, blackBall);
 
 
 
@@ -143,6 +154,13 @@ int main(int argc, char* argv[]) {
 
     renderer = SDL_CreateRenderer(win, -1, SDL_RENDERER_ACCELERATED);
 
+    std::vector<ball> balls_;
+
+    for (ball b:ball::balls){
+        balls_.push_back(b);
+    }
+    // sets outputs (updated to set and not just give)
+    getOutputs(Ballmain, Goals, turn, blackBall, Rendermain, balls_);
 
 
     Uint32 framestart;
@@ -349,10 +367,17 @@ int main(int argc, char* argv[]) {
 
             }
 
+
+            std::vector<ball> balls_;
+
+            for (ball b:ball::balls){
+                balls_.push_back(b);
+            }
+
             // sets outputs (updated to set and not just give)
-            getOutputs(Ballmain, Goals, turn, blackBall);
+            getOutputs(Ballmain, Goals, turn, blackBall, Rendermain, balls_);
 
-
+            yes = true;
 
         }
 
@@ -363,6 +388,16 @@ int main(int argc, char* argv[]) {
             infiniteLoop = true;
         }
 
+        if (yes){
+            SDL_SetRenderDrawColor(renderer, 0, 0, 255, 255);
+            SDL_RenderDrawLine(renderer, Rendermain.xCord, Rendermain.yCord, 0, 0);
+            SDL_RenderDrawLine(renderer, Rendermain.xCord_, Rendermain.yCord_, 1600, 0);
+
+            SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);
+            SDL_RenderDrawLine(renderer, Rendermain.xCord2, Rendermain.yCord2, 0, 800);
+            SDL_RenderDrawLine(renderer, Rendermain.xCord2_, Rendermain.yCord2_, 1600, 800);
+
+        }
         // presents screen
         SDL_RenderPresent(renderer);
 
@@ -370,7 +405,10 @@ int main(int argc, char* argv[]) {
         Uint32 frametime = SDL_GetTicks() - framestart;
 
         if (1000 / 144 > frametime) SDL_Delay(1000 / 144 - frametime);
-        SDL_Delay(0);
+
+        if (yes){
+            yes = false;
+        }
 
 
         // if the game is over
@@ -448,8 +486,7 @@ int main(int argc, char* argv[]) {
 
 
 
-            /// todo DEF ADD if dying from black ball becomes a big issue add the direction to the black ball as an input
-            // todo also try only allowed 20-25 turns max
+
         }
     }
 
