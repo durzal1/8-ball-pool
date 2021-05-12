@@ -49,10 +49,14 @@ ball::ball(Pixel x, Pixel y, power p, ballType Balltype, float velx, float vely)
 }
 
 //moving function
-void ball::move(std::vector<SDL_Rect> rects, int HEIGHT, goal Goal, std::vector<SDL_Point> points) {
+void ball::move(std::vector<SDL_Rect> rects, int HEIGHT, goal Goal, std::vector<SDL_Point> points, int frame) {
 
     // if the ball's velocity is 0 it wont go through this loop
     if (velx != 0 || vely != 0){
+        // sets previous frame x and y
+        lastX = x;
+        lastY = y;
+
         // ball collision
         for (ball& b : balls) {
             // makes sure it isnt detecting same ball
@@ -90,9 +94,12 @@ void ball::move(std::vector<SDL_Rect> rects, int HEIGHT, goal Goal, std::vector<
         // wall collision
         collisionAllWalls(rects, HEIGHT, Goal, points);
 
-        // checks if its velocity is not 0
-        if (velx != 0 && vely !=0){
-            hadCollision = true;
+        hadCollision = true;
+
+
+        // checks if it is stuck (the x and y havent changed and there is a velocity
+        if (x == lastX && y == lastY && frame > 900){
+            isStuck = true;
         }
     }
 
@@ -109,7 +116,7 @@ void ball::fixOverlapping(){
         if (b.innovation != this->innovation) {
             int l = fabs(powf(this->x - b.x, 2) + powf(this->y - b.y, 2));
             // balls are in each other
-            if (l <= 1550){
+            if (l <= 1400){
                 // distance between balls
                 float dist = sqrtf(powf(this->x - b.x, 2) + powf(this->y - b.y, 2));
 
@@ -122,21 +129,43 @@ void ball::fixOverlapping(){
         }
     }
 }
+
+// function to check if there are any balls that remain overlapping and fix them
+void ball::fixOverlappingFinal(){
+    // goes through every ball
+    for (ball& b : balls) {
+        // makes sure it isnt detecting same ball
+        if (b.innovation != this->innovation) {
+            int l = fabs(powf(this->x - b.x, 2) + powf(this->y - b.y, 2));
+            // balls are in each other
+            if (l <= 1500){
+                // distance between balls
+                float dist = sqrtf(powf(this->x - b.x, 2) + powf(this->y - b.y, 2));
+
+                // displace so they do not get stuck
+                float displace = 1.0f * (dist - Radius - 1);
+
+                x -= displace * ( b.x - x ) / dist;
+                y -= displace * (b.y - y) / dist;
+            }
+        }
+    }
+}
+
+
 //function that will check if a collision has occurred with another ball
 bool ball::checkForCollisionBall(ball& ball_) {
     int f = pow(Radius * 2, 2) ;
     int l = fabs(powf(this->x - ball_.x, 2) + powf(this->y - ball_.y, 2));
 
     // balls are in each other
-    if (l <= 800){
+    if (l <= 1400){
         // distance between balls
         float dist = sqrtf(powf(this->x - ball_.x, 2) + powf(this->y - ball_.y, 2));
 
         // displace so they do not get stuck
         float displace = 1.0f * (dist - Radius - 1);
 
-        int x_ =  displace * ( ball_.x - x ) / dist;
-        int y_ = displace * (ball_.y - y) / dist;
         x -= displace * ( ball_.x - x ) / dist;
         y -= displace * (ball_.y - y) / dist;
     }
@@ -218,7 +247,6 @@ bool ball::collisionAllWalls(std::vector<SDL_Rect> rects, int WIDTH, goal Goal, 
 			// conservation of mass
 			float massWall = this->mass * 0.7f;
 			float m1 = (dpNorm1 * (this->mass - massWall) + 2.0f * (massWall) * dpNorm2) / (this->mass + (massWall));
-			float m2 = (dpNorm2 * (massWall - this->mass) + 2.0f * this->mass * dpNorm1) / (this->mass + (massWall));
 
 			// adds to velocities
 			this->velx = tx * dpTan1 + nx * m1;
@@ -235,34 +263,43 @@ bool ball::collisionAllWalls(std::vector<SDL_Rect> rects, int WIDTH, goal Goal, 
 // function that will happen if a collision occurred with a ball
 void ball::collisionBall(ball& ball1) {
 
-	// distance between balls
-	float dist = sqrtf(powf(this->x - ball1.x, 2) + powf(this->y - ball1.y, 2));
+    // makes sure that its not the same collision
+    if (ballCollInno != ball1.innovation){
 
-	// Normal
-	float nx = (ball1.x - this->x) / dist;
-	float ny = (ball1.y - this->y) / dist;
+        // distance between balls
+        float dist = sqrtf(powf(this->x - ball1.x, 2) + powf(this->y - ball1.y, 2));
 
-	// Tangent
-	float tx = -ny;
-	float ty = nx;
 
-	// dot prod tan
-	float dpTan1 = this->velx * tx + this->vely * ty;
-	float dpTan2 = ball1.velx * tx + ball1.vely * ty;
+        // Normal
+        float nx = (ball1.x - this->x) / dist;
+        float ny = (ball1.y - this->y) / dist;
 
-	// dot prod norm
-	float dpNorm1 = this->velx * nx + this->vely * ny;
-	float dpNorm2 = ball1.velx * nx + ball1.vely * ny;
+        // Tangent
+        float tx = -ny;
+        float ty = nx;
 
-	// conservation of mass
-	float m1 = (dpNorm1 * (this->mass - ball1.mass) + 2.0f * ball1.mass * dpNorm2) / (this->mass + ball1.mass);
-	float m2 = (dpNorm2 * (ball1.mass - this->mass) + 2.0f * this->mass * dpNorm1) / (this->mass + ball1.mass);
+        // dot prod tan
+        float dpTan1 = this->velx * tx + this->vely * ty;
+        float dpTan2 = ball1.velx * tx + ball1.vely * ty;
 
-	// adds to velocities
-	this->velx = tx * dpTan1 + nx * m1;
-	this->vely = ty * dpTan1 + ny * m1;
-	ball1.velx = tx * dpTan2 + nx * m2;
-	ball1.vely = ty * dpTan2 + ny * m2;
+        // dot prod norm
+        float dpNorm1 = this->velx * nx + this->vely * ny;
+        float dpNorm2 = ball1.velx * nx + ball1.vely * ny;
+
+        // conservation of mass
+        float m1 = (dpNorm1 * (this->mass - ball1.mass) + 2.0f * ball1.mass * dpNorm2) / (this->mass + ball1.mass);
+        float m2 = (dpNorm2 * (ball1.mass - this->mass) + 2.0f * this->mass * dpNorm1) / (this->mass + ball1.mass);
+
+        // adds to velocities
+        this->velx = tx * dpTan1 + nx * m1;
+        this->vely = ty * dpTan1 + ny * m1;
+        ball1.velx = tx * dpTan2 + nx * m2;
+        ball1.vely = ty * dpTan2 + ny * m2;
+
+        // sets the innovation of the last collision
+        ball::ballCollInno = this->innovation;
+    }
+
 
 
 

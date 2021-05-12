@@ -205,7 +205,7 @@ std::vector<SDL_Rect> render::setBoundary(SDL_Renderer* renderer, int WIDTH, int
     // left and right
     SDL_Rect r1{ 0, int(Goal.Radius * 2.8), int(Goal.Radius * 1.5), int(HEIGHT - (Goal.Radius * 5.6)) };
     SDL_Rect r6{ mostx, int(Goal.Radius * 2.8), int(Goal.Radius * 1.5), int(HEIGHT - (Goal.Radius * 5.6)) };
- 
+
     // mid left
     SDL_Rect r2{ int(Goal.Radius * 2.8), 0, int(HEIGHT - (Goal.Radius * 4.4)), int(Goal.Radius * 1.5) };
     SDL_Rect r3{ int(Goal.Radius * 2.8), mosty, int(HEIGHT - (Goal.Radius * 4.4)), int(Goal.Radius * 1.5) };
@@ -247,12 +247,13 @@ std::vector<SDL_Point> render::setBoundary2(SDL_Renderer* renderer, std::vector<
     SDL_Rect r5 = rects[4];
     SDL_Rect r6 = rects[5];
 
-    
+
     // sets the render color to red
-    SDL_SetRenderDrawColor(renderer, 100, 203, 255, 255);
+//    SDL_SetRenderDrawColor(renderer, 100, 203, 255, 255);
 
     /// creates the points
-
+    SDL_RenderDrawLine(renderer, 615, 186, 800, 25);
+    SDL_RenderDrawLine(renderer, 585, 213, 0, 0);
     // top left
     SDL_Point point1 = { r1.w, r1.y };
     SDL_Point point1_ = { r1.w / 5, r1.w };
@@ -296,7 +297,7 @@ std::vector<SDL_Point> render::setBoundary2(SDL_Renderer* renderer, std::vector<
 
     SDL_Point point12 = { int(goals[2].x - goals[2].Radius) ,int(goals[2].y + 10) };
     SDL_Point point12_ = { r4.x + r4.w, r4.y };
-
+//
     // renders all the lines
     SDL_RenderDrawLine(renderer, point1.x, point1.y, point1_.x, point1_.y);
     SDL_RenderDrawLine(renderer, point2.x, point2.y, point2_.x, point2_.y);
@@ -317,7 +318,7 @@ std::vector<SDL_Point> render::setBoundary2(SDL_Renderer* renderer, std::vector<
     SDL_RenderDrawLine(renderer, point12.x, point12.y, point12_.x, point12_.y);
 
 
-    
+
 
     // adds the points to a vector
     std::vector<SDL_Point> points;

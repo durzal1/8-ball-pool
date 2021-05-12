@@ -25,11 +25,20 @@ private:
     // vector that stores the x and y of each pixel of the circumference
     std::vector<std::vector<Pixel>> circumference;
 
+    // x and y of last frame
+    Pixel lastX;
+    Pixel lastY;
 
+public:
     // to not have duplicate innovations
     static int nextInnovation;
 
-public:
+    // innovation of the ball that collided with another ball ( ball 1 -> ball 2 it would be ball 1) FROM LAST COLLISION
+    static int ballCollInno;
+
+    // if the ball is stuck
+    bool isStuck = false;
+
     // if its solid or stripe or black
     ballType BallType;
 
@@ -72,7 +81,7 @@ public:
     ball(Pixel x, Pixel y, power p, ballType Balltype, float velx, float vely);
 
     // moving function
-    void move(std::vector<SDL_Rect> rects, int HEIGHT, goal Goal, std::vector<SDL_Point> points);
+    void move(std::vector<SDL_Rect> rects, int HEIGHT, goal Goal, std::vector<SDL_Point> points, int frame);
 
     // sees if the ball has collided with another ball
     bool checkForCollisionBall(ball& ball);
@@ -85,6 +94,7 @@ public:
 
     // fixes overlapping
     void fixOverlapping();
+    void fixOverlappingFinal();
 
     // returns x, y
     SDL_Point getPixels();
