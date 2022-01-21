@@ -1,2 +1,2 @@
 # 8-ball-pool
-pool game that will be beaten by neat algorithm
+pool game that that can be beated by an algorithm
